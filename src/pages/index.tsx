@@ -31,21 +31,19 @@ const Blog = ({ shows }: { shows: Show[] }) => {
         title: name,
         epiNum,
       });
+      console.log(newShow);
     } catch (e) {
       console.log(e);
-    } finally {
-      console.log("finally");
     }
-    // const episodes = new Array(epiNum)
-    //   .fill(null)
-    //   .map((_, i) => ({ seasonNumber: 1, episodeNumber: i + 1 }));
-    // const newShow = await prisma.show.create({
-    //   data: {
-    //     title: name,
-    //     authorId: 1,
-    //   },
-    // });
-    // console.log(newShow);
+  };
+
+  const deleteShow = async (id: number) => {
+    try {
+      const deletedShow = await axios.delete(`/api/show/${id}`);
+      console.log(deletedShow);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -53,6 +51,7 @@ const Blog = ({ shows }: { shows: Show[] }) => {
       {shows.map((show) => (
         <div key={show.id}>
           <h2>{show.title}</h2>
+          <button onClick={() => deleteShow(show.id)}>Delete</button>
           <ul>
             {show.episodes.map((episode) => (
               <li key={episode.id}>

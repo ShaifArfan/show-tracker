@@ -12,6 +12,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
+    "@picocss/pico": "^1.5.10",
     "@prisma/client": "4.13.0",
     "axios": "^1.4.0",
     "next": "13.3.1",
