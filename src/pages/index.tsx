@@ -1,20 +1,15 @@
 import React, { useState } from "react";
 import { GetServerSideProps } from "next";
 import prisma from "@/lib/prisma";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { toast } from "react-hot-toast";
+import { Episode, Show } from "@prisma/client";
 
-interface Show {
-  id: number;
-  title: string;
+interface ShowWithEpi extends Show {
   episodes: Episode[];
 }
-interface Episode {
-  id: number;
-  seasonNumber: number;
-  episodeNumber: number;
-}
 
-const Blog = ({ shows }: { shows: Show[] }) => {
+const Blog = ({ shows }: { shows: ShowWithEpi[] }) => {
   const [formValue, setFormValue] = useState({
     name: "",
     epiNum: 0,
@@ -42,25 +37,60 @@ const Blog = ({ shows }: { shows: Show[] }) => {
       const deletedShow = await axios.delete(`/api/show/${id}`);
       console.log(deletedShow);
     } catch (e) {
+      if (e instanceof AxiosError) {
+        console.log(e);
+        toast(e.response?.data);
+      }
+      console.log(e);
+    }
+  };
+
+  const toggleWatched = async (id: number) => {
+    try {
+      const updatedEpisode = await axios.put(
+        `/api/episode/toggle/watch/${id}`,
+        {
+          watched: true,
+        }
+      );
+      console.log(updatedEpisode);
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        console.log(e);
+        toast(e.response?.data);
+      }
       console.log(e);
     }
   };
 
   return (
     <div>
-      {shows.map((show) => (
-        <div key={show.id}>
-          <h2>{show.title}</h2>
-          <button onClick={() => deleteShow(show.id)}>Delete</button>
-          <ul>
-            {show.episodes.map((episode) => (
-              <li key={episode.id}>
-                S{episode.seasonNumber} E{episode.episodeNumber}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      {shows &&
+        shows.map((show) => (
+          <div key={show.id}>
+            <h2>{show.title}</h2>
+            <button onClick={() => deleteShow(show.id)}>Delete</button>
+            <ul>
+              {show.episodes.map((episode) => (
+                <li key={episode.id}>
+                  S{episode.seasonNumber} E{episode.episodeNumber} - Filler{" "}
+                  {episode.isFiller ? "Yes" : "No"} - watched{" "}
+                  {episode.watched ? "Yes" : "No"}
+                  <a
+                    href="#"
+                    role="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleWatched(episode.id);
+                    }}
+                  >
+                    {episode.watched ? "unwatch" : "watched"}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
 
       <form
         onSubmit={(e) => {

@@ -23,9 +23,11 @@ model Show {
 }
 
 model Episode {
-  id            Int  @id @default(autoincrement())
+  id            Int     @id @default(autoincrement())
   episodeNumber Int
   seasonNumber  Int
-  show          Show @relation(fields: [showId], references: [id])
+  show          Show    @relation(fields: [showId], references: [id])
   showId        Int
+  watched       Boolean @default(false)
+  isFiller      Boolean @default(false)
 }
