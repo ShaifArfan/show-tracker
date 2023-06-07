@@ -21,6 +21,9 @@ export default async function handle(
       }));
 
       for (const episode of episodes) {
+        console.log(
+          `creating episode ${episode.episodeNumber} for show ${req.body.title}}`
+        );
         await prisma.episode.create({
           data: episode,
         });
@@ -31,18 +34,6 @@ export default async function handle(
     //   data: [...episodes],
     // });
     // }
-    return res.status(201).json(result);
-  } else if (req.method === "DELETE") {
-    const result = await prisma.show.delete({
-      where: {
-        id: req.body.id,
-      },
-    });
-    await prisma.episode.deleteMany({
-      where: {
-        showId: req.body.id,
-      },
-    });
     return res.status(201).json(result);
   }
 }
