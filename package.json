@@ -12,14 +12,19 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
-    "@picocss/pico": "^1.5.10",
+    "@emotion/react": "^11.11.1",
+    "@emotion/server": "^11.11.0",
+    "@mantine/core": "^6.0.13",
+    "@mantine/form": "^6.0.13",
+    "@mantine/hooks": "^6.0.13",
+    "@mantine/next": "^6.0.13",
+    "@mantine/notifications": "^6.0.13",
     "@prisma/client": "4.13.0",
     "axios": "^1.4.0",
     "next": "13.3.1",
     "next-superjson": "0.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hot-toast": "^2.4.1",
     "react-markdown": "8.0.7",
     "superjson": "1.12.3"
   },

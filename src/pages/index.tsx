@@ -2,29 +2,38 @@ import React, { useState } from "react";
 import { GetServerSideProps } from "next";
 import prisma from "@/lib/prisma";
 import axios, { AxiosError } from "axios";
-import { toast } from "react-hot-toast";
 import { Episode, Show } from "@prisma/client";
+import Link from "next/link";
+import { useForm } from "@mantine/form";
+import { Button, Group, NumberInput, TextInput } from "@mantine/core";
 
-interface ShowWithEpi extends Show {
-  episodes: Episode[];
-}
+const Blog = ({ shows }: { shows: Show[] }) => {
+  const form = useForm({
+    initialValues: {
+      title: "",
+      epiAmount: 0,
+      seasonNum: 1,
+    },
+  });
 
-const Blog = ({ shows }: { shows: ShowWithEpi[] }) => {
   const [formValue, setFormValue] = useState({
     name: "",
     epiNum: 0,
   });
   const createShow = async ({
-    name,
-    epiNum,
+    title,
+    epiAmount,
+    seasonNum = 1,
   }: {
-    name: string;
-    epiNum: number;
+    title: string;
+    epiAmount: number;
+    seasonNum: number;
   }) => {
     try {
       const newShow = await axios.post("/api/show", {
-        title: name,
-        epiNum,
+        title,
+        epiAmount,
+        seasonNum,
       });
       console.log(newShow);
     } catch (e) {
@@ -39,7 +48,7 @@ const Blog = ({ shows }: { shows: ShowWithEpi[] }) => {
     } catch (e) {
       if (e instanceof AxiosError) {
         console.log(e);
-        toast(e.response?.data);
+        // toast(e.response?.data);
       }
       console.log(e);
     }
@@ -57,7 +66,7 @@ const Blog = ({ shows }: { shows: ShowWithEpi[] }) => {
     } catch (e) {
       if (e instanceof AxiosError) {
         console.log(e);
-        toast(e.response?.data);
+        // toast(e.response?.data);
       }
       console.log(e);
     }
@@ -68,9 +77,11 @@ const Blog = ({ shows }: { shows: ShowWithEpi[] }) => {
       {shows &&
         shows.map((show) => (
           <div key={show.id}>
-            <h2>{show.title}</h2>
+            <h2>
+              <Link href={`shows/${show.id}`}>{show.title}</Link>
+            </h2>
             <button onClick={() => deleteShow(show.id)}>Delete</button>
-            <ul>
+            {/* <ul>
               {show.episodes.map((episode) => (
                 <li key={episode.id}>
                   S{episode.seasonNumber} E{episode.episodeNumber} - Filler{" "}
@@ -88,39 +99,36 @@ const Blog = ({ shows }: { shows: ShowWithEpi[] }) => {
                   </a>
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </div>
         ))}
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          createShow(formValue);
+          createShow({
+            ...form.values,
+          });
         }}
       >
-        <input
-          type="text"
-          name="name"
-          value={formValue.name}
-          onChange={(e) =>
-            setFormValue((preValue) => ({
-              ...preValue,
-              name: e.target.value,
-            }))
-          }
-        />
-        <input
-          type="number"
-          name="epiNum"
-          value={formValue.epiNum}
-          onChange={(e) =>
-            setFormValue((preValue) => ({
-              ...preValue,
-              epiNum: e.target.valueAsNumber,
-            }))
-          }
-        />
-        <button type="submit">add</button>
+        <Group>
+          <TextInput
+            withAsterisk
+            label="Title"
+            {...form.getInputProps("title")}
+          />
+          <NumberInput
+            withAsterisk
+            label="Episode Amount"
+            {...form.getInputProps("epiAmount")}
+          ></NumberInput>
+          <NumberInput
+            withAsterisk
+            label="Season Number"
+            {...form.getInputProps("seasonNum")}
+          ></NumberInput>
+          <Button type="submit">add</Button>
+        </Group>
       </form>
     </div>
   );

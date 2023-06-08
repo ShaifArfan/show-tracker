@@ -1,14 +1,30 @@
-import type { AppProps } from "next/app";
-import "@picocss/pico/css/pico.min.css";
-import { Toaster } from "react-hot-toast";
+import { AppProps } from "next/app";
+import Head from "next/head";
+import { MantineProvider } from "@mantine/core";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App(props: AppProps) {
+  const { Component, pageProps } = props;
+
   return (
     <>
-      <div className="container">
+      <Head>
+        <title>Show Tracker</title>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+      </Head>
+
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: "light",
+        }}
+      >
         <Component {...pageProps} />
-      </div>
-      <Toaster></Toaster>
+      </MantineProvider>
     </>
   );
 }

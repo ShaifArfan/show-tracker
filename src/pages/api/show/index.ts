@@ -13,9 +13,9 @@ export default async function handle(
       },
     });
 
-    if (req.body.epiNum) {
-      const episodes = new Array(req.body.epiNum).fill(null).map((_, i) => ({
-        seasonNumber: 1,
+    if (req.body.epiAmount) {
+      const episodes = new Array(req.body.epiAmount).fill(null).map((_, i) => ({
+        seasonNumber: req.body.seasonNum || 1,
         episodeNumber: i + 1,
         show: { connect: { id: result.id } },
       }));
