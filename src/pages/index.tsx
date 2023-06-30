@@ -6,44 +6,24 @@ import { Episode, Show } from "@prisma/client";
 import Link from "next/link";
 import { useForm } from "@mantine/form";
 import { Button, Group, NumberInput, TextInput } from "@mantine/core";
+import AddShowForm from "@/components/AddShowForm";
+import useSWR, { SWRConfig, useSWRConfig } from "swr";
+import { fetcher } from "@/lib/swrFetcher";
 
-const Blog = ({ shows }: { shows: Show[] }) => {
-  const form = useForm({
-    initialValues: {
-      title: "",
-      epiAmount: 0,
-      seasonNum: 1,
-    },
-  });
+interface Props {
+  shows: Show[];
+}
 
-  const [formValue, setFormValue] = useState({
-    name: "",
-    epiNum: 0,
-  });
-  const createShow = async ({
-    title,
-    epiAmount,
-    seasonNum = 1,
-  }: {
-    title: string;
-    epiAmount: number;
-    seasonNum: number;
-  }) => {
-    try {
-      const newShow = await axios.post("/api/show", {
-        title,
-        epiAmount,
-        seasonNum,
-      });
-      console.log(newShow);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+const HomePage = () => {
+  const { mutate } = useSWRConfig();
+
+  const { data: shows }: { data: Show[] } = useSWR("/api/show", fetcher);
+  console.log(shows);
 
   const deleteShow = async (id: number) => {
     try {
       const deletedShow = await axios.delete(`/api/show/${id}`);
+      mutate("/api/show");
       console.log(deletedShow);
     } catch (e) {
       if (e instanceof AxiosError) {
@@ -74,6 +54,7 @@ const Blog = ({ shows }: { shows: Show[] }) => {
 
   return (
     <div>
+      <AddShowForm></AddShowForm>
       {shows &&
         shows.map((show) => (
           <div key={show.id}>
@@ -81,66 +62,28 @@ const Blog = ({ shows }: { shows: Show[] }) => {
               <Link href={`shows/${show.id}`}>{show.title}</Link>
             </h2>
             <button onClick={() => deleteShow(show.id)}>Delete</button>
-            {/* <ul>
-              {show.episodes.map((episode) => (
-                <li key={episode.id}>
-                  S{episode.seasonNumber} E{episode.episodeNumber} - Filler{" "}
-                  {episode.isFiller ? "Yes" : "No"} - watched{" "}
-                  {episode.watched ? "Yes" : "No"}
-                  <a
-                    href="#"
-                    role="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleWatched(episode.id);
-                    }}
-                  >
-                    {episode.watched ? "unwatch" : "watched"}
-                  </a>
-                </li>
-              ))}
-            </ul> */}
           </div>
         ))}
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          createShow({
-            ...form.values,
-          });
-        }}
-      >
-        <Group>
-          <TextInput
-            withAsterisk
-            label="Title"
-            {...form.getInputProps("title")}
-          />
-          <NumberInput
-            withAsterisk
-            label="Episode Amount"
-            {...form.getInputProps("epiAmount")}
-          ></NumberInput>
-          <NumberInput
-            withAsterisk
-            label="Season Number"
-            {...form.getInputProps("seasonNum")}
-          ></NumberInput>
-          <Button type="submit">add</Button>
-        </Group>
-      </form>
     </div>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const shows = await prisma.show.findMany({
-    include: { episodes: true },
-  });
+  const shows = await prisma.show.findMany();
   return {
-    props: { shows },
+    props: {
+      fallback: {
+        "/api/show/": { shows },
+      },
+    },
   };
 };
 
-export default Blog;
+export default function Page({ fallback }: { fallback: Props }) {
+  // SWR hooks inside the `SWRConfig` boundary will use those values.
+  return (
+    <SWRConfig value={{ fallback }}>
+      <HomePage />
+    </SWRConfig>
+  );
+}

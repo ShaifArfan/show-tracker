@@ -5,7 +5,10 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === "POST") {
+  if (req.method === "GET") {
+    const result = await prisma.show.findMany();
+    return res.status(200).json(result);
+  } else if (req.method === "POST") {
     const result = await prisma.show.create({
       data: {
         title: req.body.title,
