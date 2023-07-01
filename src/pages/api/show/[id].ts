@@ -104,7 +104,7 @@ export default async function handle(
             data: episode,
           });
         }
-        return res.status(201).json(newEpisodes);
+        return res.status(202).json(newEpisodes);
       } else if (req.body.action === "remove") {
         console.log("test");
         if (lastEpisodeNum === 0)
@@ -117,6 +117,7 @@ export default async function handle(
         const delEps = await prisma.episode.deleteMany({
           where: {
             showId: showId,
+            seasonNumber: seasonNum,
             episodeNumber: {
               gt: lastEpisodeNum - reqEpiAmount,
             },

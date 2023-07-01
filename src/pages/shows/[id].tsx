@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import prisma from "@/lib/prisma";
 import { GetServerSideProps } from "next";
 import { Episode, Show } from "@prisma/client";
@@ -43,26 +43,25 @@ interface FormValues {
   seasonNum: number;
   action: FormAction;
 }
-const addNewEpis = async (
+const updateEpis = async (
   url: string,
   { arg }: { arg: { epiAmount: number; seasonNum: number; action: FormAction } }
 ) => {
   try {
-    console.log(arg);
     const res = await axios.put(url, arg);
-    return res.data;
-  } catch (e) {
-    console.log(e);
-  }
+    return res;
+  } catch (e) {}
 };
 
 function SingleShow() {
   const theme = useMantineTheme();
   const router = useRouter();
   const showId = Number(router.query.id);
-  const { data } = useSWR("/api/show/" + showId, fetcher);
+  const { data, isLoading } = useSWR("/api/show/" + showId, fetcher);
   const { show, seasons } = data as Props;
-  console.log(seasons);
+  const [activeTab, setActiveTab] = useState<string | null>(
+    seasons ? "s" + seasons[0]?.seasonNumber : null
+  );
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -74,17 +73,33 @@ function SingleShow() {
 
   const { trigger, isMutating } = useSWRMutation(
     "/api/show/" + showId,
-    addNewEpis
+    updateEpis
   );
 
-  const addEpisodes = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await trigger({
+    const res = await trigger({
       epiAmount: form.values.epiAmount,
       seasonNum: form.values.seasonNum,
       action: form.values.action,
     });
+    if (res?.status !== 202) return;
+    if (form.values.action === "add") {
+      if (form.values.seasonNum > seasons.length) {
+        setActiveTab("s" + form.values.seasonNum);
+      }
+    } else if (form.values.action === "remove") {
+      const isAllDel =
+        seasons[
+          seasons.findIndex((val) => val.seasonNumber === form.values.seasonNum)
+        ]._count._all === form.values.epiAmount;
+      if (isAllDel && activeTab === "s" + form.values.seasonNum) {
+        setActiveTab("s" + seasons[0].seasonNumber || null);
+      }
+    }
   };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
@@ -97,7 +112,7 @@ function SingleShow() {
           }}
         ></DeleteShowButton>
       </Group>
-      <form onSubmit={addEpisodes}>
+      <form onSubmit={handleSubmit}>
         <Group>
           <NumberInput
             label="epi amount"
@@ -117,10 +132,10 @@ function SingleShow() {
           </Button>
         </Group>
       </form>
-      {seasons && seasons?.length < 1 ? (
+      {!seasons || seasons?.length < 1 ? (
         "No Episodes"
       ) : (
-        <Tabs defaultValue={seasons ? "s" + seasons[0].seasonNumber : null}>
+        <Tabs value={activeTab} onTabChange={setActiveTab}>
           <Tabs.List>
             {seasons?.map((season) => (
               <Tabs.Tab

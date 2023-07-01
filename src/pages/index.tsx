@@ -17,25 +17,6 @@ interface Props {
 
 const HomePage = () => {
   const { data: shows }: { data: Show[] } = useSWR("/api/show", fetcher);
-  console.log(shows);
-
-  const toggleWatched = async (id: number) => {
-    try {
-      const updatedEpisode = await axios.put(
-        `/api/episode/toggle/watch/${id}`,
-        {
-          watched: true,
-        }
-      );
-      console.log(updatedEpisode);
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        console.log(e);
-        // toast(e.response?.data);
-      }
-      console.log(e);
-    }
-  };
 
   return (
     <div>
