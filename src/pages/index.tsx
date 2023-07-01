@@ -9,30 +9,15 @@ import { Button, Group, NumberInput, TextInput } from "@mantine/core";
 import AddShowForm from "@/components/AddShowForm";
 import useSWR, { SWRConfig, useSWRConfig } from "swr";
 import { fetcher } from "@/lib/swrFetcher";
+import DeleteShowButton from "@/components/DeleteShowButton";
 
 interface Props {
   shows: Show[];
 }
 
 const HomePage = () => {
-  const { mutate } = useSWRConfig();
-
   const { data: shows }: { data: Show[] } = useSWR("/api/show", fetcher);
   console.log(shows);
-
-  const deleteShow = async (id: number) => {
-    try {
-      const deletedShow = await axios.delete(`/api/show/${id}`);
-      mutate("/api/show");
-      console.log(deletedShow);
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        console.log(e);
-        // toast(e.response?.data);
-      }
-      console.log(e);
-    }
-  };
 
   const toggleWatched = async (id: number) => {
     try {
@@ -57,12 +42,12 @@ const HomePage = () => {
       <AddShowForm></AddShowForm>
       {shows &&
         shows.map((show) => (
-          <div key={show.id}>
+          <Group key={show.id}>
             <h2>
               <Link href={`shows/${show.id}`}>{show.title}</Link>
             </h2>
-            <button onClick={() => deleteShow(show.id)}>Delete</button>
-          </div>
+            <DeleteShowButton showId={show.id}></DeleteShowButton>
+          </Group>
         ))}
     </div>
   );
