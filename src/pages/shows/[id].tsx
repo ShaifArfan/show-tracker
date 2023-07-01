@@ -9,6 +9,7 @@ import {
   Grid,
   Group,
   NumberInput,
+  Select,
   Tabs,
   useMantineTheme,
 } from "@mantine/core";
@@ -36,12 +37,19 @@ interface Props {
   }[];
 }
 
+type FormAction = "add" | "remove";
+interface FormValues {
+  epiAmount: number;
+  seasonNum: number;
+  action: FormAction;
+}
 const addNewEpis = async (
   url: string,
-  { arg }: { arg: { epiAmount: number; seasonNum: number } }
+  { arg }: { arg: { epiAmount: number; seasonNum: number; action: FormAction } }
 ) => {
   try {
-    const res = await axios.post(url, arg);
+    console.log(arg);
+    const res = await axios.put(url, arg);
     return res.data;
   } catch (e) {
     console.log(e);
@@ -56,10 +64,11 @@ function SingleShow() {
   const { show, seasons } = data as Props;
   console.log(seasons);
 
-  const form = useForm({
+  const form = useForm<FormValues>({
     initialValues: {
       epiAmount: 1,
       seasonNum: 1,
+      action: "add",
     },
   });
 
@@ -73,6 +82,7 @@ function SingleShow() {
     await trigger({
       epiAmount: form.values.epiAmount,
       seasonNum: form.values.seasonNum,
+      action: form.values.action,
     });
   };
 
@@ -97,6 +107,11 @@ function SingleShow() {
             label="season Num"
             {...form.getInputProps("seasonNum")}
           ></NumberInput>
+          <Select
+            label="Action"
+            data={["add", "remove"]}
+            {...form.getInputProps("action")}
+          ></Select>
           <Button type="submit" disabled={isMutating}>
             Submit
           </Button>

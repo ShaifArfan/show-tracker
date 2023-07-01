@@ -65,13 +65,16 @@ export default async function handle(
       }
       console.log(e);
     }
-  } else if (req.method === "POST") {
+  } else if (req.method === "PUT") {
     if (!req.body.epiAmount)
       return res.status(400).json({ message: "Missing epiAmount" });
     if (!req.body.seasonNum)
       return res.status(400).json({ message: "Missing seasonNum" });
+    if (!req.body.action) {
+      req.body.action = "add";
+    }
 
-    const newEpiAmount = Number(req.body.epiAmount);
+    const reqEpiAmount = Number(req.body.epiAmount);
     const seasonNum = Number(req.body.seasonNum);
     let lastEpisodeNum = 0;
 
@@ -86,23 +89,44 @@ export default async function handle(
         lastEpisodeNum =
           currentEpisodes[currentEpisodes.length - 1].episodeNumber;
       }
+      if (req.body.action === "add") {
+        const newEpisodes = new Array(reqEpiAmount).fill(null).map((_, i) => ({
+          seasonNumber: seasonNum,
+          episodeNumber: i + lastEpisodeNum + 1,
+          show: { connect: { id: showId } },
+        }));
 
-      const newEpisodes = new Array(newEpiAmount).fill(null).map((_, i) => ({
-        seasonNumber: seasonNum,
-        episodeNumber: i + lastEpisodeNum + 1,
-        show: { connect: { id: showId } },
-      }));
+        for (const episode of newEpisodes) {
+          console.log(
+            `creating S${episode.seasonNumber}E${episode.episodeNumber} for show ${showId}}`
+          );
+          await prisma.episode.create({
+            data: episode,
+          });
+        }
+        return res.status(201).json(newEpisodes);
+      } else if (req.body.action === "remove") {
+        console.log("test");
+        if (lastEpisodeNum === 0)
+          return res.status(400).json({ message: "No episodes to remove" });
+        if (lastEpisodeNum < reqEpiAmount)
+          return res
+            .status(400)
+            .json({ message: "Not enough episodes to remove" });
 
-      for (const episode of newEpisodes) {
-        console.log(
-          `creating S${episode.seasonNumber}E${episode.episodeNumber} for show ${showId}}`
-        );
-        await prisma.episode.create({
-          data: episode,
+        const delEps = await prisma.episode.deleteMany({
+          where: {
+            showId: showId,
+            episodeNumber: {
+              gt: lastEpisodeNum - reqEpiAmount,
+            },
+          },
         });
+        console.log(delEps);
+        return res.status(202).json(delEps);
       }
-      return res.status(201).json(newEpisodes);
     } catch (e) {
+      return res.status(500).json(e);
       console.log(e);
     }
   }
