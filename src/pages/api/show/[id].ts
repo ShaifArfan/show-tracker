@@ -71,7 +71,7 @@ export default async function handle(
     if (!req.body.seasonNum)
       return res.status(400).json({ message: "Missing seasonNum" });
     if (!req.body.action) {
-      req.body.action = "add";
+      return res.status(400).json({ message: "Update Action Type Missing" });
     }
 
     const reqEpiAmount = Number(req.body.epiAmount);
@@ -98,7 +98,7 @@ export default async function handle(
 
         for (const episode of newEpisodes) {
           console.log(
-            `creating S${episode.seasonNumber}E${episode.episodeNumber} for show ${showId}}`
+            `creating S${episode.seasonNumber}E${episode.episodeNumber} for show ${showId}`
           );
           await prisma.episode.create({
             data: episode,
@@ -127,8 +127,8 @@ export default async function handle(
         return res.status(202).json(delEps);
       }
     } catch (e) {
-      return res.status(500).json(e);
       console.log(e);
+      return res.status(500).json(e);
     }
   }
 }

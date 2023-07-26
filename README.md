@@ -1,5 +1,7 @@
 ## TODO:
 
 - [ ] setup eslint and prettier
-- [ ] Authentication
-- [ ] UI
+- [ ] Authentication - [next-auth](https://github.com/nextauthjs/)
+- [ ] UI (Mantine )
+- [ ] Features
+  - [ ] Range Watch
