@@ -1,6 +1,6 @@
-import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export const getSingleShowData = async (showId: number) => {
   const show = await prisma.show.findUnique({
@@ -10,7 +10,7 @@ export const getSingleShowData = async (showId: number) => {
     },
   });
   const seasons = await prisma.episode.groupBy({
-    by: ["seasonNumber"],
+    by: ['seasonNumber'],
     where: {
       showId,
     },
@@ -27,10 +27,10 @@ export default async function handle(
   res: NextApiResponse
 ) {
   const showId = Number(req.query.id);
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     const { show, seasons } = await getSingleShowData(showId);
     return res.status(200).json({ show, seasons });
-  } else if (req.method === "DELETE") {
+  } else if (req.method === 'DELETE') {
     try {
       const episodes = await prisma.episode.findMany({
         where: {
@@ -65,13 +65,13 @@ export default async function handle(
       }
       console.log(e);
     }
-  } else if (req.method === "PUT") {
+  } else if (req.method === 'PUT') {
     if (!req.body.epiAmount)
-      return res.status(400).json({ message: "Missing epiAmount" });
+      return res.status(400).json({ message: 'Missing epiAmount' });
     if (!req.body.seasonNum)
-      return res.status(400).json({ message: "Missing seasonNum" });
+      return res.status(400).json({ message: 'Missing seasonNum' });
     if (!req.body.action) {
-      return res.status(400).json({ message: "Update Action Type Missing" });
+      return res.status(400).json({ message: 'Update Action Type Missing' });
     }
 
     const reqEpiAmount = Number(req.body.epiAmount);
@@ -89,7 +89,7 @@ export default async function handle(
         lastEpisodeNum =
           currentEpisodes[currentEpisodes.length - 1].episodeNumber;
       }
-      if (req.body.action === "add") {
+      if (req.body.action === 'add') {
         const newEpisodes = new Array(reqEpiAmount).fill(null).map((_, i) => ({
           seasonNumber: seasonNum,
           episodeNumber: i + lastEpisodeNum + 1,
@@ -105,14 +105,14 @@ export default async function handle(
           });
         }
         return res.status(202).json(newEpisodes);
-      } else if (req.body.action === "remove") {
-        console.log("test");
+      } else if (req.body.action === 'remove') {
+        console.log('test');
         if (lastEpisodeNum === 0)
-          return res.status(400).json({ message: "No episodes to remove" });
+          return res.status(400).json({ message: 'No episodes to remove' });
         if (lastEpisodeNum < reqEpiAmount)
           return res
             .status(400)
-            .json({ message: "Not enough episodes to remove" });
+            .json({ message: 'Not enough episodes to remove' });
 
         const delEps = await prisma.episode.deleteMany({
           where: {
