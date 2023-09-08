@@ -1,12 +1,20 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import prisma from '@/lib/prisma';
 
 const handler = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'John Doe' },
+        email: {
+          label: 'Email',
+          type: 'email',
+          placeholder: 'JohnDoe@exmaple.com',
+        },
         password: {
           label: 'Password',
           type: 'password',
@@ -20,30 +28,23 @@ const handler = NextAuth({
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        if (
-          credentials?.username === 'test' &&
-          credentials.password === 'test'
-        ) {
-          const user = {
-            id: 1,
-            name: 'Test User',
-            email: 'test@example.com',
-          };
+        if (!credentials?.email || !credentials?.password) return null;
 
-          return user as any;
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
+        console.log(user);
+        if (user) {
+          const passMatch = bcrypt.compareSync(
+            credentials.password,
+            user.password
+          );
+          if (passMatch) return user;
+          return null;
         }
-        // const res = await fetch('/your/endpoint', {
-        //   method: 'POST',
-        //   body: JSON.stringify(credentials),
-        //   headers: { 'Content-Type': 'application/json' },
-        // });
-        // const user = await res.json();
 
-        // If no error and we have user data, return it
-        // if (res.ok && user) {
-        //   return user;
-        // }
-        // Return null if user data could not be retrieved
         return null;
       },
     }),
