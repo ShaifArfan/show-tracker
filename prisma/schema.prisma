@@ -8,10 +8,12 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
-  shows Show[]
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
+  name         String
+  shows        Show[]
+  refreshToken String?
+  password     String  @default("")
 }
 
 model Show {

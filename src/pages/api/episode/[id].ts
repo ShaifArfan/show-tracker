@@ -1,14 +1,14 @@
-import prisma from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { Prisma } from '@prisma/client';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/lib/prisma';
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     const id = Number(req.query.id);
-    if (!id) return res.status(400).json({ message: "Missing id" });
+    if (!id) return res.status(400).json({ message: 'Missing id' });
 
     try {
       const episode = await prisma.episode.findUnique({

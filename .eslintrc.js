@@ -4,11 +4,11 @@ module.exports = {
     es2021: true,
   },
   extends: [
+    'next/core-web-vitals',
     'airbnb',
     'airbnb-typescript',
     'airbnb/hooks',
     'plugin:prettier/recommended',
-    'plugin:@next/next/recommended',
   ],
   overrides: [
     {

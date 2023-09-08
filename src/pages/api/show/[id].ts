@@ -1,6 +1,6 @@
-import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/lib/prisma';
 
 export const getSingleShowData = async (showId: number) => {
   const show = await prisma.show.findUnique({
@@ -30,7 +30,8 @@ export default async function handle(
   if (req.method === 'GET') {
     const { show, seasons } = await getSingleShowData(showId);
     return res.status(200).json({ show, seasons });
-  } else if (req.method === 'DELETE') {
+  }
+  if (req.method === 'DELETE') {
     try {
       const episodes = await prisma.episode.findMany({
         where: {
@@ -81,7 +82,7 @@ export default async function handle(
     try {
       const currentEpisodes = await prisma.episode.findMany({
         where: {
-          showId: showId,
+          showId,
           seasonNumber: seasonNum,
         },
       });
@@ -105,7 +106,8 @@ export default async function handle(
           });
         }
         return res.status(202).json(newEpisodes);
-      } else if (req.body.action === 'remove') {
+      }
+      if (req.body.action === 'remove') {
         console.log('test');
         if (lastEpisodeNum === 0)
           return res.status(400).json({ message: 'No episodes to remove' });
@@ -116,7 +118,7 @@ export default async function handle(
 
         const delEps = await prisma.episode.deleteMany({
           where: {
-            showId: showId,
+            showId,
             seasonNumber: seasonNum,
             episodeNumber: {
               gt: lastEpisodeNum - reqEpiAmount,
