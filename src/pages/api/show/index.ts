@@ -1,5 +1,5 @@
-import prisma from '@/lib/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/lib/prisma';
 
 export default async function handle(
   req: NextApiRequest,
@@ -8,7 +8,8 @@ export default async function handle(
   if (req.method === 'GET') {
     const result = await prisma.show.findMany();
     return res.status(200).json(result);
-  } else if (req.method === 'POST') {
+  }
+  if (req.method === 'POST') {
     const result = await prisma.show.create({
       data: {
         title: req.body.title,
