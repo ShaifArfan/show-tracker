@@ -2,9 +2,10 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import type { NextAuthOptions } from 'next-auth';
 import prisma from '@/lib/prisma';
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -21,13 +22,7 @@ const handler = NextAuth({
           placeholder: '*******',
         },
       },
-      async authorize(credentials, req) {
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
@@ -35,12 +30,13 @@ const handler = NextAuth({
             email: credentials.email,
           },
         });
-        console.log(user);
-        if (user) {
+
+        if (user && user.password) {
           const passMatch = bcrypt.compareSync(
             credentials.password,
             user.password
           );
+          console.log(user);
           if (passMatch) return user;
           return null;
         }
@@ -49,9 +45,24 @@ const handler = NextAuth({
       },
     }),
   ],
-  jwt: {
+  session: {
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-});
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      return session;
+    },
+  },
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

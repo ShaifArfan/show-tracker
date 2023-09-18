@@ -1,14 +1,17 @@
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-export const getSingleShowData = async (showId: number) => {
-  const show = await prisma.show.findUnique({
-    where: { id: showId },
+export const getSingleShowData = async (showId: number, userId: string) => {
+  const show = await prisma.show.findFirst({
+    where: { id: showId, userId },
     include: {
       episodes: true,
     },
   });
+  if (!show) return { show: null, seasons: null };
   const seasons = await prisma.episode.groupBy({
     by: ['seasonNumber'],
     where: {
@@ -27,8 +30,17 @@ export default async function handle(
   res: NextApiResponse
 ) {
   const showId = Number(req.query.id);
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) {
+    return res.status(403).json('not authorized');
+  }
+
   if (req.method === 'GET') {
-    const { show, seasons } = await getSingleShowData(showId);
+    const { show, seasons } = await getSingleShowData(
+      showId,
+      session?.user?.id
+    );
+    // console.log({ show, seasons });
     return res.status(200).json({ show, seasons });
   }
   if (req.method === 'DELETE') {
@@ -133,4 +145,5 @@ export default async function handle(
       return res.status(500).json(e);
     }
   }
+  return res.status(400).json({ message: 'Invalid request' });
 }

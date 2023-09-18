@@ -101,6 +101,8 @@ function SingleShow() {
 
   if (isLoading) return <div>Loading...</div>;
 
+  if (!show) return <div>404</div>;
+
   return (
     <>
       <Group>

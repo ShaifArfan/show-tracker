@@ -1,12 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth/next';
 import prisma from '@/lib/prisma';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await getServerSession(req, res, authOptions);
+  if (!session) {
+    return res.status(403).json('not authorized');
+  }
+
   if (req.method === 'GET') {
-    const result = await prisma.show.findMany();
+    const result = await prisma.show.findMany({
+      where: {
+        userId: session.user.id,
+      },
+    });
     return res.status(200).json(result);
   }
   if (req.method === 'POST') {
