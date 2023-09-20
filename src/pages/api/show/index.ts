@@ -35,6 +35,7 @@ export default async function handle(
         show: { connect: { id: result.id } },
       }));
 
+      // TODO need to update this with a batch create
       for (const episode of episodes) {
         console.log(
           `creating episode ${episode.episodeNumber} for show ${req.body.title}}`
@@ -51,4 +52,6 @@ export default async function handle(
     // }
     return res.status(201).json(result);
   }
+
+  return res.status(404).json('not found');
 }

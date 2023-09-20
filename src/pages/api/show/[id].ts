@@ -54,6 +54,7 @@ export default async function handle(
       });
 
       console.log(episodes);
+      // TODO need to update this with a batch delete
       if (episodes.length > 0) {
         for (const episode of episodes) {
           console.log(
