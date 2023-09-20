@@ -1,15 +1,15 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 const userData: Prisma.UserCreateInput[] = [
   {
-    name: "Alice",
-    email: "alice@prisma.io",
+    name: 'Alice',
+    email: 'alice@prisma.io',
     shows: {
       create: [
         {
-          title: "Bleach",
+          title: 'Bleach',
         },
       ],
     },

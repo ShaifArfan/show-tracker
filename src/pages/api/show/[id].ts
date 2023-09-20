@@ -36,6 +36,8 @@ export default async function handle(
   }
 
   if (req.method === 'GET') {
+    if (!session?.user?.id) return res.status(403).json('not authorized');
+
     const { show, seasons } = await getSingleShowData(
       showId,
       session?.user?.id

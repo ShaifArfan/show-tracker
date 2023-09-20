@@ -24,7 +24,7 @@ export default async function handle(
     const result = await prisma.show.create({
       data: {
         title: req.body.title,
-        author: { connect: { id: 1 } },
+        userId: session.user.id,
       },
     });
 
