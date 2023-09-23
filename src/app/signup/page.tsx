@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import useSWRMutation from 'swr/mutation';
 import axios from 'axios';
-import prisma from '@/lib/prisma';
 
 const mutationFn = async (
   url: string,

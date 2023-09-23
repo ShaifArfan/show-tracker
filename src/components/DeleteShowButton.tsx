@@ -1,6 +1,6 @@
-import axios, { AxiosError } from "axios";
-import React from "react";
-import { useSWRConfig } from "swr";
+import axios, { AxiosError } from 'axios';
+import React from 'react';
+import { useSWRConfig } from 'swr';
 
 interface Props {
   showId: number;
@@ -13,18 +13,21 @@ function DeleteShowButton({ showId, onDelete }: Props) {
   const deleteShow = async (id: number) => {
     try {
       const deletedShow = await axios.delete(`/api/show/${id}`);
-      mutate("/api/show");
-      onDelete && onDelete();
-      console.log(deletedShow);
+      mutate('/api/show');
+      if (onDelete) {
+        onDelete();
+      }
     } catch (e) {
       if (e instanceof AxiosError) {
         console.log(e);
-        // toast(e.response?.data);
       }
-      console.log(e);
     }
   };
-  return <button onClick={() => deleteShow(showId)}>Delete</button>;
+  return (
+    <button type="button" onClick={() => deleteShow(showId)}>
+      Delete
+    </button>
+  );
 }
 
 export default DeleteShowButton;

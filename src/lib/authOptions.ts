@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -21,12 +22,17 @@ export const authOptions: NextAuthOptions = {
           placeholder: '*******',
         },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
+          },
+          select: {
+            id: true,
+            email: true,
+            password: true,
           },
         });
 
@@ -35,8 +41,11 @@ export const authOptions: NextAuthOptions = {
             credentials.password,
             user.password
           );
-          console.log(user);
-          if (passMatch) return user;
+          if (passMatch)
+            return {
+              id: user.id,
+              email: user.email,
+            };
           return null;
         }
 
@@ -51,12 +60,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.userId = user.id;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
+      if (token?.userId) {
+        session.user.id = token.userId;
+        return session;
+      }
       return session;
     },
   },

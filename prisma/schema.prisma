@@ -12,18 +12,10 @@ datasource db {
 model User {
   id       String  @id @default(cuid())
   name     String?
-  email    String? @unique
+  email    String  @unique
   image    String?
   password String?
   Show     Show[]
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
 }
 
 model Show {

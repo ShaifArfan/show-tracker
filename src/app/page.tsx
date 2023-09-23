@@ -5,7 +5,6 @@ import { Show } from '@prisma/client';
 import Link from 'next/link';
 import { Button, Group } from '@mantine/core';
 import useSWR from 'swr';
-import { redirect } from 'next/navigation';
 import AddShowForm from '@/components/AddShowForm';
 import { fetcher } from '@/lib/swrFetcher';
 import DeleteShowButton from '../components/DeleteShowButton';

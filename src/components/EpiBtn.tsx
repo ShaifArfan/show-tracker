@@ -1,17 +1,14 @@
-import { fetcher } from "@/lib/swrFetcher";
-import handle from "@/pages/api/user";
-import { Button } from "@mantine/core";
-import { Episode } from "@prisma/client";
-import axios from "axios";
-import React, { useState } from "react";
-import useSWRMutation from "swr/mutation";
-import useSWR, { useSWRConfig } from "swr";
+import { Button } from '@mantine/core';
+import { Episode } from '@prisma/client';
+import axios from 'axios';
+import React, { useState } from 'react';
+import useSWRMutation from 'swr/mutation';
 
 interface Props {
   epi: Episode;
 }
 
-async function toggleWatched(url: string, { arg }: { arg: number }) {
+async function toggleWatched(url: string) {
   const res = await axios.put(url);
   return res.data;
 }
@@ -20,20 +17,20 @@ function EpiBtn({ epi }: Props) {
   const [state, setState] = useState(epi);
 
   const { trigger, isMutating } = useSWRMutation(
-    "/api/episode/toggle/watch/" + epi.id,
+    `/api/episode/toggle/watch/${epi.id}`,
     toggleWatched
   );
 
   const handleClick = async () => {
-    const data = await trigger(state.id);
+    const data = await trigger();
     setState(data);
   };
 
   return (
     <Button
       key={state.id}
-      color={state.watched ? "yellow" : "indigo"}
-      p={"xs"}
+      color={state.watched ? 'yellow' : 'indigo'}
+      p="xs"
       onClick={handleClick}
       disabled={isMutating}
     >
