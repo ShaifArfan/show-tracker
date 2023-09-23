@@ -6,7 +6,7 @@ const userData: Prisma.UserCreateInput[] = [
   {
     name: 'Alice',
     email: 'alice@prisma.io',
-    shows: {
+    Show: {
       create: [
         {
           title: 'Bleach',

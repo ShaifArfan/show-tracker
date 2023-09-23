@@ -53,5 +53,6 @@ module.exports = {
         format: ['camelCase', 'PascalCase', 'UPPER_CASE', 'snake_case'],
       },
     ],
+    'no-underscore-dangle': 0,
   },
 };
