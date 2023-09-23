@@ -1,9 +1,11 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Episode, Show } from '@prisma/client';
 import { Group, Tabs, useMantineTheme } from '@mantine/core';
 import useSWR from 'swr';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { fetcher } from '@/lib/swrFetcher';
 import Season from '@/components/Season';
 import DeleteShowButton from '@/components/DeleteShowButton';
@@ -22,10 +24,10 @@ interface Props {
   }[];
 }
 
-export default function SingleShow() {
-  const theme = useMantineTheme();
+export default function SingleShow({ params }: { params: { id: string } }) {
+  const showId = Number(params.id);
   const router = useRouter();
-  const showId = Number(router.query.id);
+  const theme = useMantineTheme();
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
   const { data, isLoading } = useSWR(`/api/show/${showId}`, fetcher);
@@ -54,6 +56,7 @@ export default function SingleShow() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         seasons={seasons}
+        showId={showId}
       />
 
       {!seasons || seasons?.length < 1 ? (
@@ -61,7 +64,7 @@ export default function SingleShow() {
       ) : (
         <Tabs
           value={activeTab || `s${seasons[0].seasonNumber}`}
-          onTabChange={setActiveTab}
+          onChange={setActiveTab}
         >
           <Tabs.List>
             {seasons?.map((season) => (

@@ -1,8 +1,8 @@
 ## TODO:
 
-- [ ] setup eslint and prettier
+- [x] setup eslint and prettier
 - [x] PostgreSQL - (supabase)
 - [x] Authentication - [next-auth](https://github.com/nextauthjs/)
-- [ ] UI (Mantine )
+- [ ] UI (Mantine-v7)
 - [ ] Features
   - [ ] Range Watch

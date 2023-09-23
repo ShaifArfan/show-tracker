@@ -1,7 +1,7 @@
 import { Button, Group, NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import useSWRMutation from 'swr/mutation';
 
 interface FormValues {
@@ -23,6 +23,7 @@ const updateEpis = async (
 interface Props {
   activeTab: string | null;
   setActiveTab: React.Dispatch<React.SetStateAction<string | null>>;
+  showId: number;
   seasons: {
     _count: {
       _all: number;
@@ -31,10 +32,7 @@ interface Props {
   }[];
 }
 
-function ShowForm({ activeTab, setActiveTab, seasons }: Props) {
-  const router = useRouter();
-  const showId = Number(router.query.id);
-
+function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
   const form = useForm<FormValues>({
     initialValues: {
       epiAmount: 1,
