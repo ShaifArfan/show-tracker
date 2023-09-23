@@ -3,6 +3,7 @@ import { Episode, Show } from '@prisma/client';
 import { Group, Tabs, useMantineTheme } from '@mantine/core';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { fetcher } from '@/lib/swrFetcher';
 import Season from '@/components/Season';
 import DeleteShowButton from '@/components/DeleteShowButton';
@@ -37,6 +38,9 @@ export default function SingleShow() {
 
   return (
     <>
+      <h3>
+        <Link href="/">{`<- back to home`}</Link>
+      </h3>
       <Group>
         <h3>{show.title}</h3>
         <DeleteShowButton
@@ -55,7 +59,10 @@ export default function SingleShow() {
       {!seasons || seasons?.length < 1 ? (
         'No Episodes'
       ) : (
-        <Tabs value={activeTab} onTabChange={setActiveTab}>
+        <Tabs
+          value={activeTab || `s${seasons[0].seasonNumber}`}
+          onTabChange={setActiveTab}
+        >
           <Tabs.List>
             {seasons?.map((season) => (
               <Tabs.Tab

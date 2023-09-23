@@ -1,8 +1,7 @@
 import { Prisma } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth';
 import prisma from '@/lib/prisma';
-import { authOptions } from '@/lib/authOptions';
+import checkSession from '@/lib/checkSession';
 
 export const getSingleShowData = async (showId: number, userId: string) => {
   const show = await prisma.show.findFirst({
@@ -29,48 +28,34 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const user = await checkSession({ req, res });
+  if (!user) return null;
   const showId = Number(req.query.id);
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    return res.status(403).json('not authorized');
-  }
+
+  // need to check if user has access to this show
+  const thisShow = await prisma.show.findFirst({
+    where: {
+      id: showId,
+      userId: user.id,
+    },
+  });
+  if (!thisShow) return res.status(404).json({ message: 'Show not found' });
 
   if (req.method === 'GET') {
-    if (!session?.user?.id) return res.status(403).json('not authorized');
-
-    const { show, seasons } = await getSingleShowData(
-      showId,
-      session?.user?.id
-    );
-    // console.log({ show, seasons });
+    const { show, seasons } = await getSingleShowData(showId, user.id);
     return res.status(200).json({ show, seasons });
   }
   if (req.method === 'DELETE') {
     try {
-      const episodes = await prisma.episode.findMany({
+      await prisma.episode.deleteMany({
         where: {
-          showId: Number(req.query.id),
+          showId: thisShow.id,
         },
       });
 
-      console.log(episodes);
-      // TODO need to update this with a batch delete
-      if (episodes.length > 0) {
-        for (const episode of episodes) {
-          console.log(
-            `deleting episode ${episode.id} from show ${episode.showId}`
-          );
-          await prisma.episode.delete({
-            where: {
-              id: Number(episode.id),
-            },
-          });
-        }
-      }
-
       const result = await prisma.show.delete({
         where: {
-          id: Number(req.query.id),
+          id: thisShow.id,
         },
       });
 
@@ -79,7 +64,7 @@ export default async function handle(
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         return res.status(500).json(e.meta?.cause);
       }
-      console.log(e);
+      return res.status(500).json(e);
     }
   } else if (req.method === 'PUT') {
     if (!req.body.epiAmount)
@@ -97,7 +82,7 @@ export default async function handle(
     try {
       const currentEpisodes = await prisma.episode.findMany({
         where: {
-          showId,
+          showId: thisShow.id,
           seasonNumber: seasonNum,
         },
       });
@@ -109,21 +94,15 @@ export default async function handle(
         const newEpisodes = new Array(reqEpiAmount).fill(null).map((_, i) => ({
           seasonNumber: seasonNum,
           episodeNumber: i + lastEpisodeNum + 1,
-          show: { connect: { id: showId } },
+          showId: thisShow.id,
         }));
 
-        for (const episode of newEpisodes) {
-          console.log(
-            `creating S${episode.seasonNumber}E${episode.episodeNumber} for show ${showId}`
-          );
-          await prisma.episode.create({
-            data: episode,
-          });
-        }
-        return res.status(202).json(newEpisodes);
+        const createdEps = await prisma.episode.createMany({
+          data: newEpisodes,
+        });
+        return res.status(202).json(createdEps);
       }
       if (req.body.action === 'remove') {
-        console.log('test');
         if (lastEpisodeNum === 0)
           return res.status(400).json({ message: 'No episodes to remove' });
         if (lastEpisodeNum < reqEpiAmount)
@@ -133,18 +112,16 @@ export default async function handle(
 
         const delEps = await prisma.episode.deleteMany({
           where: {
-            showId,
+            showId: thisShow.id,
             seasonNumber: seasonNum,
             episodeNumber: {
               gt: lastEpisodeNum - reqEpiAmount,
             },
           },
         });
-        console.log(delEps);
         return res.status(202).json(delEps);
       }
     } catch (e) {
-      console.log(e);
       return res.status(500).json(e);
     }
   }

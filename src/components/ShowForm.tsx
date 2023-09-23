@@ -32,7 +32,6 @@ interface Props {
 }
 
 function ShowForm({ activeTab, setActiveTab, seasons }: Props) {
-  setActiveTab(`s${seasons[0].seasonNumber}` || null);
   const router = useRouter();
   const showId = Number(router.query.id);
 
