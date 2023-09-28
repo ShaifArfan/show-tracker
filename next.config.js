@@ -4,7 +4,7 @@ const { withSuperjson } = require('next-superjson');
 const nextConfig = withSuperjson()({
   reactStrictMode: true,
   experimental: {
-    appDir: true,
+    // appDir: true,
   },
 });
 
