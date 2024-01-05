@@ -13,7 +13,6 @@ import {
   Button,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import axios from 'axios';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import classes from './LoginForm.module.css';
