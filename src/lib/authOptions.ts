@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
-import { PrismaAdapter } from '@auth/prisma-adapter';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import prisma from './prisma';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import prismaClient from './prisma';
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prismaClient),
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({
+        const user = await prismaClient.user.findUnique({
           where: {
             email: credentials.email,
           },
@@ -57,6 +57,10 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  pages: {
+    signIn: '/login',
+    newUser: '/sign-up',
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -64,9 +68,9 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }) {
-      if (token?.userId) {
-        session.user.id = token.userId;
+    async session({ session, user }) {
+      if (user) {
+        session.user.id = user.id;
         return session;
       }
       return session;
