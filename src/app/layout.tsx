@@ -1,4 +1,4 @@
-import { MantineProvider } from '@mantine/core';
+import { Container, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 
 export const metadata = {
@@ -14,7 +14,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <Container>{children}</Container>
+        </MantineProvider>
       </body>
     </html>
   );

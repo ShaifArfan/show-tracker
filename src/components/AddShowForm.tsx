@@ -1,3 +1,5 @@
+'use client';
+
 import { Button, Group, NumberInput, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import axios from 'axios';

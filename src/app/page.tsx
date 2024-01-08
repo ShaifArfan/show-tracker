@@ -1,16 +1,25 @@
-'use client';
+'use server';
 
 import React from 'react';
-import { Show } from '@prisma/client';
 import Link from 'next/link';
 import { Button, Group } from '@mantine/core';
-import useSWR from 'swr';
 import AddShowForm from '@/components/AddShowForm';
-import { fetcher } from '@/lib/swrFetcher';
+import prisma from '@/lib/prisma';
+import { auth } from '@/lib/auth';
 import DeleteShowButton from '../components/DeleteShowButton';
 
-function HomePage() {
-  const { data: shows }: { data: Show[] } = useSWR('/api/show', fetcher);
+export default async function () {
+  const session = await auth();
+
+  if (!session) {
+    return null;
+  }
+
+  const shows = await prisma.show.findMany({
+    where: {
+      userId: session.user.id,
+    },
+  });
 
   return (
     <div>
@@ -29,8 +38,4 @@ function HomePage() {
         ))}
     </div>
   );
-}
-
-export default function Page() {
-  return <HomePage />;
 }

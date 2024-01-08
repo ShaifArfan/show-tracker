@@ -1,3 +1,5 @@
+'use client';
+
 import axios, { AxiosError } from 'axios';
 import React from 'react';
 import { useSWRConfig } from 'swr';
