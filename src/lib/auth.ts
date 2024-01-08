@@ -3,7 +3,6 @@ import type {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import type { NextAuthOptions } from 'next-auth';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './authOptions';
 

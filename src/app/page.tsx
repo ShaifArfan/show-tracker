@@ -6,6 +6,7 @@ import { Button, Group } from '@mantine/core';
 import AddShowForm from '@/components/AddShowForm';
 import prisma from '@/lib/prisma';
 import { auth } from '@/lib/auth';
+import { z } from 'zod';
 import DeleteShowButton from '../components/DeleteShowButton';
 
 export default async function () {

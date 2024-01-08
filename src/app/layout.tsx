@@ -1,5 +1,9 @@
 import { Container, MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+
+// mantine styles
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
 export const metadata = {
   title: 'Next.js',
@@ -15,6 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <MantineProvider>
+          <Notifications />
           <Container>{children}</Container>
         </MantineProvider>
       </body>
