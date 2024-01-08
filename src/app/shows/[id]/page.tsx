@@ -34,6 +34,8 @@ export default function SingleShow({ params }: { params: { id: string } }) {
 
   if (isLoading) return <div>Loading...</div>;
 
+  if (!data) return <div>404</div>;
+
   const { show, seasons } = data as Props;
 
   if (!show) return <div>404</div>;

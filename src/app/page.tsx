@@ -4,9 +4,11 @@ import React from 'react';
 import Link from 'next/link';
 import { Button, Group } from '@mantine/core';
 import AddShowForm from '@/components/AddShowForm';
-import prisma from '@/lib/prisma';
+import { Show } from '@prisma/client';
+import useSWR from 'swr';
+import { fetcher } from '@/lib/swrFetcher';
 import { auth } from '@/lib/auth';
-import { z } from 'zod';
+import prisma from '@/lib/prisma';
 import DeleteShowButton from '../components/DeleteShowButton';
 
 export default async function () {
@@ -21,6 +23,13 @@ export default async function () {
       userId: session.user.id,
     },
   });
+  // const res = await fetch('/api/show', {
+  //   method: 'GET',
+  //   next: { tags: ['shows'] },
+  // });
+  // console.log(res);
+  // const shows: Show[] = await res.json();
+  // const { data: shows }: { data: Show[] } = useSWR('/api/show', fetcher);
 
   return (
     <div>

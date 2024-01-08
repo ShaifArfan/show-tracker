@@ -33,6 +33,7 @@ export default async function handle(
   const showId = Number(req.query.id);
 
   // need to check if user has access to this show
+  console.log(showId, user.id);
   const thisShow = await prisma.show.findFirst({
     where: {
       id: showId,
