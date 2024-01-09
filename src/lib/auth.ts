@@ -16,5 +16,6 @@ export function auth(
     | [NextApiRequest, NextApiResponse]
     | []
 ) {
+  console.log('from auth.ts');
   return getServerSession(...args, authOptions);
 }

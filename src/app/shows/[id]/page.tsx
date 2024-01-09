@@ -26,11 +26,13 @@ interface Props {
 
 export default function SingleShow({ params }: { params: { id: string } }) {
   const showId = Number(params.id);
+  console.log({ showId });
   const router = useRouter();
   const theme = useMantineTheme();
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
   const { data, isLoading } = useSWR(`/api/show/${showId}`, fetcher);
+  console.log({ data, isLoading });
 
   if (isLoading) return <div>Loading...</div>;
 
