@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/lib/prisma';
-import checkSession from '@/lib/checkSession';
+import { getCurrentUser } from '@/modules/user';
 
 // export default async function handle(
 //   req: NextApiRequest,
@@ -43,8 +43,7 @@ import checkSession from '@/lib/checkSession';
 // }
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  const user = await checkSession({ req, res });
-  if (!user) return null;
+  const user = await getCurrentUser();
 
   const result = await prisma.show.findMany({
     where: {
@@ -56,8 +55,7 @@ export async function GET(req: NextApiRequest, res: NextApiResponse) {
 }
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const user = await checkSession({ req, res });
-  if (!user) return null;
+  const user = await getCurrentUser();
   const result = await prisma.show.create({
     data: {
       title: req.body.title,

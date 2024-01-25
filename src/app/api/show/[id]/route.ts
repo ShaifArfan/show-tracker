@@ -1,5 +1,5 @@
-import { auth } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { getCurrentUser } from '@/modules/user';
 import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -39,9 +39,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await auth();
-  const user = session?.user;
-  if (!user) return null;
+  const user = await getCurrentUser();
   const thisShow = await getCurrentShow(Number(params.id), user.id);
 
   if (!thisShow)
@@ -55,9 +53,7 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await auth();
-  const user = session?.user;
-  if (!user) return null;
+  const user = await getCurrentUser();
   const thisShow = await getCurrentShow(Number(params.id), user.id);
 
   if (!thisShow)
@@ -93,9 +89,7 @@ export async function PUT(
     params: { id: string };
   }
 ) {
-  const session = await auth();
-  const user = session?.user;
-  if (!user) return null;
+  const user = await getCurrentUser();
 
   const thisShow = await getCurrentShow(Number(params.id), user.id);
   if (!thisShow)
