@@ -121,6 +121,7 @@ export async function PUT(
     if (currentEpisodes.length > 0) {
       lastEpisodeNum =
         currentEpisodes[currentEpisodes.length - 1].episodeNumber;
+      console.log(lastEpisodeNum);
     }
     if (body.action === 'add') {
       const newEpisodes = new Array(reqEpiAmount).fill(null).map((_, i) => ({

@@ -6,8 +6,10 @@ import { Button, Group, NumberInput, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import React from 'react';
+import { useSWRConfig } from 'swr';
 
 function AddShowForm() {
+  const { mutate } = useSWRConfig();
   const form = useForm({
     initialValues: {
       title: '',
@@ -20,6 +22,7 @@ function AddShowForm() {
     const res = await createShow(form.values);
     if (res?.success) {
       form.reset();
+      mutate('/api/show');
       notifications.show({
         title: 'Success',
         message: 'Show added',

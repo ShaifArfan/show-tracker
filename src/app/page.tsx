@@ -1,43 +1,49 @@
-'use server';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
-import { Button, Group } from '@mantine/core';
+import { Box, Group, Skeleton, Stack, Title } from '@mantine/core';
 import AddShowForm from '@/components/AddShowForm';
 import { Show } from '@prisma/client';
-import useSWR from 'swr';
 import { fetcher } from '@/lib/swrFetcher';
-import { auth } from '@/lib/auth';
-import prisma from '@/lib/prisma';
+
+import useSWR from 'swr';
+import { UserButton } from '@/components/UserButton';
 import DeleteShowButton from '../components/DeleteShowButton';
 
-export default async function () {
-  const session = await auth();
+export default function () {
+  // const user = await getCurrentUser();
 
-  if (!session) {
-    return null;
-  }
-
-  const shows = await prisma.show.findMany({
-    where: {
-      userId: session.user.id,
-    },
-  });
+  // const shows = await prisma.show.findMany({
+  //   where: {
+  //     userId: user.id,
+  //   },
+  // });
   // const res = await fetch('/api/show', {
   //   method: 'GET',
   //   next: { tags: ['shows'] },
   // });
   // console.log(res);
   // const shows: Show[] = await res.json();
-  // const { data: shows }: { data: Show[] } = useSWR('/api/show', fetcher);
+  const { data: shows, isLoading } = useSWR<Show[]>('/api/show', fetcher);
 
   return (
     <div>
-      <Button component={Link} href="/api/auth/signout" mb="md">
-        Logout
-      </Button>
+      <Group justify="space-between">
+        <Title>Show Tracker</Title>
+        <Box>
+          <UserButton />
+        </Box>
+      </Group>
       <AddShowForm />
-      {shows &&
+      {isLoading ? (
+        <Stack mt={20}>
+          <Skeleton h={30} w={400} />
+          <Skeleton h={30} w={200} />
+          <Skeleton h={30} w={600} />
+        </Stack>
+      ) : (
+        shows &&
         shows.map((show) => (
           <Group key={show.id}>
             <h2>
@@ -45,7 +51,8 @@ export default async function () {
             </h2>
             <DeleteShowButton showId={show.id} />
           </Group>
-        ))}
+        ))
+      )}
     </div>
   );
 }

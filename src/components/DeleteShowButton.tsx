@@ -1,34 +1,38 @@
 'use client';
 
-import axios, { AxiosError } from 'axios';
+import { ActionIcon } from '@mantine/core';
+import axios from 'axios';
 import React from 'react';
+import { MdDelete } from 'react-icons/md';
 import { useSWRConfig } from 'swr';
+import useSWRMutation from 'swr/mutation';
 
 interface Props {
   showId: number;
-  onDelete?: () => void;
 }
 
-function DeleteShowButton({ showId, onDelete }: Props) {
-  const { mutate } = useSWRConfig();
+const mutateFn = async (url: string) => {
+  const res = await axios.delete(url);
+  return res.data;
+};
 
-  const deleteShow = async (id: number) => {
-    try {
-      const deletedShow = await axios.delete(`/api/show/${id}`);
-      mutate('/api/show');
-      if (onDelete) {
-        onDelete();
-      }
-    } catch (e) {
-      if (e instanceof AxiosError) {
-        console.log(e);
-      }
-    }
-  };
+function DeleteShowButton({ showId }: Props) {
+  const { mutate } = useSWRConfig();
+  const { trigger, isMutating } = useSWRMutation(
+    `/api/show/${showId}`,
+    mutateFn
+  );
+
   return (
-    <button type="button" onClick={() => deleteShow(showId)}>
-      Delete
-    </button>
+    <ActionIcon
+      type="button"
+      onClick={() => trigger().then(() => mutate('/api/show'))}
+      color="red"
+      variant="light"
+      loading={isMutating}
+    >
+      <MdDelete />
+    </ActionIcon>
   );
 }
 

@@ -8,8 +8,13 @@ interface Props {
   epi: Episode;
 }
 
-async function toggleWatched(url: string) {
-  const res = await axios.put(url);
+async function toggleWatched(
+  url: string,
+  { arg }: { arg: { currentStatus: boolean } }
+) {
+  const res = await axios.put(url, {
+    watched: !arg.currentStatus,
+  });
   return res.data;
 }
 
@@ -17,12 +22,14 @@ function EpiBtn({ epi }: Props) {
   const [state, setState] = useState(epi);
 
   const { trigger, isMutating } = useSWRMutation(
-    `/api/episode/toggle/watch/${epi.id}`,
+    `/api/episode/${epi.id}`,
     toggleWatched
   );
 
   const handleClick = async () => {
-    const data = await trigger();
+    const data = await trigger({
+      currentStatus: state.watched,
+    });
     setState(data);
   };
 

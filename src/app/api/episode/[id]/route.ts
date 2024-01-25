@@ -35,8 +35,7 @@ export async function PUT(
   try {
     const user = await getCurrentUser();
     const { watched } = await req.json();
-    if (!watched || typeof watched !== 'boolean')
-      throw new Error('Invalid Update');
+    if (typeof watched !== 'boolean') throw new Error('Invalid Update');
 
     const episode = await prisma.episode.update({
       where: {
