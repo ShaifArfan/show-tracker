@@ -44,9 +44,6 @@ export default function SingleShow({ params }: { params: { id: string } }) {
 
   return (
     <>
-      <h3>
-        <Link href="/">{`<- back to home`}</Link>
-      </h3>
       <Group>
         <h3>{show.title}</h3>
         <DeleteShowButton

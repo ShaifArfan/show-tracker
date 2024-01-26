@@ -9,6 +9,7 @@ import useSWRMutation from 'swr/mutation';
 
 interface Props {
   showId: number;
+  onDelete?: () => void;
 }
 
 const mutateFn = async (url: string) => {
@@ -16,7 +17,7 @@ const mutateFn = async (url: string) => {
   return res.data;
 };
 
-function DeleteShowButton({ showId }: Props) {
+function DeleteShowButton({ showId, onDelete }: Props) {
   const { mutate } = useSWRConfig();
   const { trigger, isMutating } = useSWRMutation(
     `/api/show/${showId}`,
@@ -26,7 +27,11 @@ function DeleteShowButton({ showId }: Props) {
   return (
     <ActionIcon
       type="button"
-      onClick={() => trigger().then(() => mutate('/api/show'))}
+      onClick={() =>
+        trigger()
+          .then(() => mutate('/api/show'))
+          .then(() => onDelete && onDelete())
+      }
       color="red"
       variant="light"
       loading={isMutating}
