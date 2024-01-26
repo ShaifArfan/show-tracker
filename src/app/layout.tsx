@@ -24,10 +24,7 @@ export default function RootLayout({
         {/* <SessionProvider> */}
         <MantineProvider defaultColorScheme="light">
           <Notifications />
-          <Container>
-            <Header />
-            {children}
-          </Container>
+          <Container>{children}</Container>
         </MantineProvider>
         {/* </SessionProvider> */}
       </body>

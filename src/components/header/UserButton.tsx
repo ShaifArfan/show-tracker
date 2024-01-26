@@ -1,26 +1,14 @@
-import {
-  UnstyledButton,
-  Group,
-  Avatar,
-  Text,
-  Box,
-  Menu,
-  ActionIcon,
-} from '@mantine/core';
-import { MdExpandMore } from 'react-icons/md';
+import { UnstyledButton, Group, Avatar, Text, Box } from '@mantine/core';
 import { getCurrentUser } from '@/modules/user';
 import classes from './UserButton.module.css';
 import UserButtonActions from './UserButtonActions';
 
 export async function UserButton() {
   const user = await getCurrentUser();
-  // const { data } = useSession();
-  // const user = data?.user;
-
-  // if (!user) return null;
 
   return (
     <Box>
+      {/* {JSON.stringify(user)} */}
       <UnstyledButton className={classes.user}>
         <Group>
           <Avatar radius="xl">{user.name.charAt(0).toUpperCase()}</Avatar>

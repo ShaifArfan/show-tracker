@@ -1,9 +1,8 @@
-import React from 'react';
-import { getCurrentUser } from '@/modules/user';
 import prisma from '@/lib/prisma';
+import { getCurrentUser } from '@/modules/user';
 import Dashboard from '@/components/dashboard/Dashboard';
 
-export default async function () {
+async function page() {
   const user = await getCurrentUser();
 
   const shows = await prisma.show.findMany({
@@ -14,3 +13,5 @@ export default async function () {
 
   return <Dashboard shows={shows} />;
 }
+
+export default page;
