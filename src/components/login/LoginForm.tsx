@@ -15,6 +15,7 @@ import {
 import { useForm } from '@mantine/form';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
+import Link from 'next/link';
 import classes from './LoginForm.module.css';
 
 interface LoginInfo {
@@ -54,7 +55,7 @@ export function LoginForm() {
       </Title>
       <Text c="dimmed" size="sm" ta="center" mt={5}>
         Do not have an account yet?{' '}
-        <Anchor size="sm" component="button">
+        <Anchor size="sm" component={Link} href="/signup">
           Create account
         </Anchor>
       </Text>

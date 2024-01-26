@@ -5,11 +5,12 @@ import { getErrorMessage } from '@/lib/getErrorMessage';
 import { Button, Group, NumberInput, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSWRConfig } from 'swr';
 
 function AddShowForm() {
   const { mutate } = useSWRConfig();
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     initialValues: {
       title: '',
@@ -19,21 +20,28 @@ function AddShowForm() {
   });
 
   const handleSubmit = async () => {
-    const res = await createShow(form.values);
-    if (res?.success) {
-      form.reset();
-      mutate('/api/show');
-      notifications.show({
-        title: 'Success',
-        message: 'Show added',
-        color: 'green',
-      });
-    } else {
-      notifications.show({
-        title: 'Error',
-        message: getErrorMessage(res?.error),
-        color: 'red',
-      });
+    try {
+      setLoading(true);
+      const res = await createShow(form.values);
+      if (res?.success) {
+        form.reset();
+        mutate('/api/show');
+        notifications.show({
+          title: 'Success',
+          message: 'Show added',
+          color: 'green',
+        });
+      } else {
+        notifications.show({
+          title: 'Error',
+          message: getErrorMessage(res?.error),
+          color: 'red',
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,7 +52,7 @@ function AddShowForm() {
         handleSubmit();
       }}
     >
-      <Group>
+      <Group align="flex-end">
         <TextInput
           withAsterisk
           label="Title"
@@ -60,7 +68,9 @@ function AddShowForm() {
           label="Season Number"
           {...form.getInputProps('seasonNum')}
         />
-        <Button type="submit">add</Button>
+        <Button type="submit" loading={loading} disabled={loading}>
+          Add Show
+        </Button>
       </Group>
     </form>
   );
