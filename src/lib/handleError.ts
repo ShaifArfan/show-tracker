@@ -11,7 +11,7 @@ export const handleError = (e: any) => {
             target: e.meta?.target,
             error: e,
           },
-          { status: 400 }
+          { status: 409 }
         );
       default:
         return NextResponse.json(e.message, { status: 500 });

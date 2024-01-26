@@ -18,7 +18,7 @@ import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import Link from 'next/link';
 import useSWRMutation from 'swr/mutation';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { notifications } from '@mantine/notifications';
 import classes from './SignUpForm.module.css';
 
@@ -42,7 +42,7 @@ export function SignUpForm() {
     },
   });
 
-  const { trigger, isMutating } = useSWRMutation(
+  const { trigger, isMutating, error } = useSWRMutation(
     `/api/auth/signup`,
     mutationFn
   );
@@ -68,8 +68,25 @@ export function SignUpForm() {
         message: 'Signed up successfully!',
         loading: false,
         color: 'green',
+        autoClose: true,
       });
     } catch (e) {
+      notifications.update({
+        id: 'sign-up',
+        title: 'Sign up',
+        message: 'Failed to sign up',
+        loading: false,
+        color: 'red',
+        autoClose: true,
+      });
+
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 409) {
+          error.response.data.target.forEach((t: string) => {
+            form.setFieldError(t, 'Already exists');
+          });
+        }
+      }
       console.error(e);
     }
   };
