@@ -1,7 +1,7 @@
 import { Box, useMantineTheme } from '@mantine/core';
 import { Episode } from '@prisma/client';
 import React from 'react';
-import EpiBtn from './EpiBtn';
+import EpiBtn from '../EpiBtn';
 
 function Season({
   seasonNum,

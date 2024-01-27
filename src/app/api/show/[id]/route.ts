@@ -1,6 +1,6 @@
+import { handleError } from '@/lib/handleError';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/modules/user';
-import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const getSingleShowData = async (showId: number, userId: string) => {
@@ -39,27 +39,31 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const user = await getCurrentUser();
-  const thisShow = await getCurrentShow(Number(params.id), user.id);
+  try {
+    const user = await getCurrentUser();
+    const thisShow = await getCurrentShow(Number(params.id), user.id);
 
-  if (!thisShow)
-    return NextResponse.json({ message: 'Show not found' }, { status: 404 });
+    if (!thisShow)
+      return NextResponse.json({ message: 'Show not found' }, { status: 404 });
 
-  const { show, seasons } = await getSingleShowData(thisShow.id, user.id);
-  return NextResponse.json({ show, seasons }, { status: 200 });
+    const { show, seasons } = await getSingleShowData(thisShow.id, user.id);
+    return NextResponse.json({ show, seasons }, { status: 200 });
+  } catch (e) {
+    return handleError(e);
+  }
 }
 
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const user = await getCurrentUser();
-  const thisShow = await getCurrentShow(Number(params.id), user.id);
-
-  if (!thisShow)
-    return NextResponse.json({ message: 'Show not found' }, { status: 404 });
-
   try {
+    const user = await getCurrentUser();
+    const thisShow = await getCurrentShow(Number(params.id), user.id);
+
+    if (!thisShow)
+      return NextResponse.json({ message: 'Show not found' }, { status: 404 });
+
     await prisma.episode.deleteMany({
       where: {
         showId: thisShow.id,
@@ -74,10 +78,7 @@ export async function DELETE(
 
     return NextResponse.json(result, { status: 202 });
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      return NextResponse.json(e.meta?.cause, { status: 500 });
-    }
-    return NextResponse.json(e, { status: 500 });
+    return handleError(e);
   }
 }
 
@@ -89,29 +90,35 @@ export async function PUT(
     params: { id: string };
   }
 ) {
-  const user = await getCurrentUser();
-
-  const thisShow = await getCurrentShow(Number(params.id), user.id);
-  if (!thisShow)
-    return NextResponse.json({ message: 'Show not found' }, { status: 404 });
-
-  const body = await req.json();
-  if (!body.epiAmount)
-    return NextResponse.json({ message: 'Missing epiAmount' }, { status: 400 });
-  if (!body.seasonNum)
-    return NextResponse.json({ message: 'Missing seasonNum' }, { status: 400 });
-  if (!body.action) {
-    return NextResponse.json(
-      { message: 'Update Action Type Missing' },
-      { status: 400 }
-    );
-  }
-
-  const reqEpiAmount = Number(body.epiAmount);
-  const seasonNum = Number(body.seasonNum);
-  let lastEpisodeNum = 0;
-
   try {
+    const user = await getCurrentUser();
+
+    const thisShow = await getCurrentShow(Number(params.id), user.id);
+    if (!thisShow)
+      return NextResponse.json({ message: 'Show not found' }, { status: 404 });
+
+    const body = await req.json();
+    if (!body.epiAmount)
+      return NextResponse.json(
+        { message: 'Missing epiAmount' },
+        { status: 400 }
+      );
+    if (!body.seasonNum)
+      return NextResponse.json(
+        { message: 'Missing seasonNum' },
+        { status: 400 }
+      );
+    if (!body.action) {
+      return NextResponse.json(
+        { message: 'Update Action Type Missing' },
+        { status: 400 }
+      );
+    }
+
+    const reqEpiAmount = Number(body.epiAmount);
+    const seasonNum = Number(body.seasonNum);
+    let lastEpisodeNum = 0;
+
     const currentEpisodes = await prisma.episode.findMany({
       where: {
         showId: thisShow.id,
@@ -159,6 +166,6 @@ export async function PUT(
       return NextResponse.json(delEps, { status: 202 });
     }
   } catch (e) {
-    return NextResponse.json(e, { status: 500 });
+    return handleError(e);
   }
 }
