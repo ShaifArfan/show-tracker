@@ -1,28 +1,8 @@
 import { handleError } from '@/lib/handleError';
 import prisma from '@/lib/prisma';
+import { getSingleShowData } from '@/modules/show';
 import { getCurrentUser } from '@/modules/user';
 import { NextRequest, NextResponse } from 'next/server';
-
-export const getSingleShowData = async (showId: number, userId: string) => {
-  const show = await prisma.show.findFirst({
-    where: { id: showId, userId },
-    include: {
-      episodes: true,
-    },
-  });
-  if (!show) return { show: null, seasons: null };
-  const seasons = await prisma.episode.groupBy({
-    by: ['seasonNumber'],
-    where: {
-      showId,
-    },
-    _count: {
-      _all: true,
-    },
-  });
-
-  return { show, seasons };
-};
 
 const getCurrentShow = async (showId: number, userId: string) => {
   const thisShow = await prisma.show.findFirst({

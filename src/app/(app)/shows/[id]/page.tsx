@@ -1,7 +1,7 @@
 import React from 'react';
 import SingleShow from '@/components/show/SingleShow';
 import { getCurrentUser } from '@/modules/user';
-import { getSingleShowData } from '@/app/api/show/[id]/route';
+import { getSingleShowData } from '@/modules/show';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const user = await getCurrentUser();
