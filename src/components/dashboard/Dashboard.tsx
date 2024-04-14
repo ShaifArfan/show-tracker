@@ -14,21 +14,19 @@ interface Props {
 }
 
 function Dashboard({ shows }: Props) {
-  const { data } = useSWR<Show[]>('/api/show', fetcher, {
-    fallbackData: shows,
-  });
   return (
     <div>
       <AddShowForm />
-      {data &&
-        data.map((show) => (
-          <Group key={show.id}>
-            <h2>
-              <Link href={`shows/${show.id}`}>{show.title}</Link>
-            </h2>
-            <DeleteShowButton showId={show.id} />
-          </Group>
-        ))}
+      {shows.length > 0
+        ? shows.map((show) => (
+            <Group key={show.id}>
+              <h2>
+                <Link href={`shows/${show.id}`}>{show.title}</Link>
+              </h2>
+              <DeleteShowButton showId={show.id} />
+            </Group>
+          ))
+        : 'No shows yet'}
     </div>
   );
 }

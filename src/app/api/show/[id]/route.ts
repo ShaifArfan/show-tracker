@@ -1,19 +1,12 @@
 import { handleError } from '@/lib/handleError';
 import prisma from '@/lib/prisma';
-import { getSingleShowData } from '@/modules/show';
+import {
+  deleteSingleShow,
+  getCurrentShow,
+  getSingleShowData,
+} from '@/modules/show';
 import { getCurrentUser } from '@/modules/user';
 import { NextRequest, NextResponse } from 'next/server';
-
-const getCurrentShow = async (showId: number, userId: string) => {
-  const thisShow = await prisma.show.findFirst({
-    where: {
-      id: showId,
-      userId,
-    },
-  });
-
-  return thisShow;
-};
 
 export async function GET(
   req: NextRequest,
@@ -38,25 +31,8 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await getCurrentUser();
-    const thisShow = await getCurrentShow(Number(params.id), user.id);
-
-    if (!thisShow)
-      return NextResponse.json({ message: 'Show not found' }, { status: 404 });
-
-    await prisma.episode.deleteMany({
-      where: {
-        showId: thisShow.id,
-      },
-    });
-
-    const result = await prisma.show.delete({
-      where: {
-        id: thisShow.id,
-      },
-    });
-
-    return NextResponse.json(result, { status: 202 });
+    const res = await deleteSingleShow(Number(params.id));
+    return NextResponse.json(res, { status: 202 });
   } catch (e) {
     return handleError(e);
   }
