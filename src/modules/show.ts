@@ -80,7 +80,7 @@ export const deleteSingleShow = async (id: number) => {
 
   await prisma.episode.deleteMany({
     where: {
-      showId: thisShow.id,
+      showId: thisShow.id + 50,
     },
   });
 

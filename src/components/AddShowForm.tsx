@@ -1,8 +1,15 @@
 'use client';
 
-import { createShowAction } from '@/app/actions/show/createSow';
-import { getErrorMessage } from '@/lib/getErrorMessage';
-import { Button, Group, NumberInput, TextInput } from '@mantine/core';
+import { createShowAction } from '@/app/actions/show';
+import {
+  Box,
+  Button,
+  Group,
+  NumberInput,
+  Paper,
+  Space,
+  TextInput,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import React, { useState } from 'react';
@@ -15,11 +22,20 @@ function AddShowForm() {
       epiAmount: 0,
       seasonNum: 0,
     },
+    validate: {
+      title: (value) => value.length > 0 || 'Title is required',
+      epiAmount: (value) =>
+        value > 0 ? null : 'Episode amount must be greater than 0',
+      seasonNum: (value) =>
+        value > 0 ? null : 'Season number must be greater than 0',
+    },
   });
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
+      form.validate();
+      if (!form.isValid()) return;
       const res = await createShowAction(form.values);
       form.reset();
       notifications.show({
@@ -31,7 +47,7 @@ function AddShowForm() {
       const error = e instanceof Error ? e : new Error('Failed to create show');
       notifications.show({
         title: 'Error',
-        message: getErrorMessage(error.message),
+        message: error.message,
         color: 'red',
       });
     } finally {
@@ -40,33 +56,47 @@ function AddShowForm() {
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-    >
-      <Group align="flex-end">
-        <TextInput
-          withAsterisk
-          label="Title"
-          {...form.getInputProps('title')}
-        />
-        <NumberInput
-          withAsterisk
-          label="Episode Amount"
-          {...form.getInputProps('epiAmount')}
-        />
-        <NumberInput
-          withAsterisk
-          label="Season Number"
-          {...form.getInputProps('seasonNum')}
-        />
-        <Button type="submit" loading={loading} disabled={loading}>
-          Add Show
-        </Button>
-      </Group>
-    </form>
+    <Paper bg="var(--mantine-color-gray-3)" p="md">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <Group align="flex-start">
+          <TextInput
+            withAsterisk
+            label="Title"
+            style={{ flex: 1 }}
+            placeholder='e.g. "Breaking Bad"'
+            {...form.getInputProps('title')}
+          />
+          <NumberInput
+            withAsterisk
+            label="Episode Amount"
+            style={{ flex: 1 }}
+            {...form.getInputProps('epiAmount')}
+          />
+          <NumberInput
+            withAsterisk
+            label="Season Number"
+            style={{ flex: 1 }}
+            {...form.getInputProps('seasonNum')}
+          />
+          <Box style={{ alignSelf: 'flex-center', flexGrow: 'initial' }}>
+            <Space h={24} />
+            <Button
+              type="submit"
+              loading={loading}
+              disabled={loading}
+              fullWidth
+            >
+              Add Show
+            </Button>
+          </Box>
+        </Group>
+      </form>
+    </Paper>
   );
 }
 

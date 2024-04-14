@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteShowAction } from '@/app/actions/show/deleteShow';
+import { deleteShowAction } from '@/app/actions/show';
 import { ActionIcon } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import React, { useState } from 'react';
@@ -29,12 +29,10 @@ function DeleteShowButton({ showId, onDelete }: Props) {
         onDelete();
       }
     } catch (e) {
-      const error = e instanceof Error ? e : new Error('Failed to delete show');
-      console.error(error);
       notifications.show({
         title: 'Error',
         color: 'red',
-        message: error.message,
+        message: 'Failed to delete show',
       });
     } finally {
       setLoading(false);
