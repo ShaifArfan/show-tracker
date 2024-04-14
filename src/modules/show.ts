@@ -35,7 +35,7 @@ export const getSingleShowData = async (showId: number, userId: string) => {
 
 export const deleteSingleShow = async (id: number) => {
   const user = await getCurrentUser();
-  const thisShow = await getCurrentShow(id + 12, user.id);
+  const thisShow = await getCurrentShow(id, user.id);
 
   if (!thisShow) throw new Error('Show not found');
 
