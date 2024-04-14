@@ -4,8 +4,6 @@ import { Group } from '@mantine/core';
 import React from 'react';
 import { Show } from '@prisma/client';
 import Link from 'next/link';
-import useSWR from 'swr';
-import { fetcher } from '@/lib/swrFetcher';
 import AddShowForm from '../AddShowForm';
 import DeleteShowButton from '../DeleteShowButton';
 

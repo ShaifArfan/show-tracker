@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteShow } from '@/app/actions/deleteShow';
+import { deleteShowAction } from '@/app/actions/show/deleteShow';
 import { ActionIcon } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import React, { useState } from 'react';
@@ -17,16 +17,13 @@ function DeleteShowButton({ showId, onDelete }: Props) {
   const handleDelete = async () => {
     try {
       setLoading(true);
-      const res = await deleteShow(showId);
-      // const res: Response<Show> = await fetch(`/api/shows/${showId}`, {
-      //   method: 'DELETE',
-      // });
+      const res = await deleteShowAction(showId);
 
       notifications.show({
-        id: `delete-show${res.data?.id}`,
+        id: `delete-show${res.id}`,
         title: 'Successfully deleted',
         color: 'green',
-        message: `"${res.data?.title}" has been deleted`,
+        message: `"${res.title}" has been deleted`,
       });
       if (onDelete) {
         onDelete();

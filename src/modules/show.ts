@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import { z } from 'zod';
 import { getCurrentUser } from './user';
 
 export const getCurrentShow = async (showId: number, userId: string) => {
@@ -10,6 +11,44 @@ export const getCurrentShow = async (showId: number, userId: string) => {
   });
 
   return thisShow;
+};
+
+const createShowSchema = z.object({
+  title: z.string().min(1),
+  epiAmount: z.number().min(1),
+  seasonNum: z.number().min(1),
+});
+
+export type CreateShowProps = z.infer<typeof createShowSchema>;
+export const createShow = async (data: CreateShowProps) => {
+  const user = await getCurrentUser();
+
+  // check if the data is valid using zod
+  const parsed = createShowSchema.safeParse(data);
+
+  if (!parsed.success) {
+    throw new Error('Invalid data provided');
+  }
+  const validData = parsed.data;
+
+  const newShow = await prisma.show.create({
+    data: {
+      title: validData.title,
+      userId: user.id,
+    },
+  });
+
+  const episodes = new Array(validData.epiAmount).fill(null).map((_, i) => ({
+    seasonNumber: validData.seasonNum || 1,
+    episodeNumber: i + 1,
+    showId: newShow.id,
+  }));
+
+  await prisma.episode.createMany({
+    data: episodes,
+  });
+
+  return newShow;
 };
 
 export const getSingleShowData = async (showId: number, userId: string) => {

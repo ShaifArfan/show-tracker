@@ -1,6 +1,6 @@
 'use client';
 
-import { createShow } from '@/app/actions/createShow';
+import { createShowAction } from '@/app/actions/show/createSow';
 import { getErrorMessage } from '@/lib/getErrorMessage';
 import { Button, Group, NumberInput, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -8,7 +8,6 @@ import { notifications } from '@mantine/notifications';
 import React, { useState } from 'react';
 
 function AddShowForm() {
-  // const { mutate } = useSWRConfig();
   const [loading, setLoading] = useState(false);
   const form = useForm({
     initialValues: {
@@ -21,24 +20,20 @@ function AddShowForm() {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const res = await createShow(form.values);
-      if (res?.success) {
-        form.reset();
-        // mutate('/api/show');
-        notifications.show({
-          title: 'Success',
-          message: 'Show added',
-          color: 'green',
-        });
-      } else {
-        notifications.show({
-          title: 'Error',
-          message: getErrorMessage(res?.error),
-          color: 'red',
-        });
-      }
+      const res = await createShowAction(form.values);
+      form.reset();
+      notifications.show({
+        title: 'New Show Added',
+        message: `"${res?.title}" has been added`,
+        color: 'green',
+      });
     } catch (e) {
-      console.error(e);
+      const error = e instanceof Error ? e : new Error('Failed to create show');
+      notifications.show({
+        title: 'Error',
+        message: getErrorMessage(error.message),
+        color: 'red',
+      });
     } finally {
       setLoading(false);
     }

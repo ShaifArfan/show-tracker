@@ -11,7 +11,10 @@ export async function GET() {
       userId: user.id,
     },
   });
-  return Response.json(result, { status: 200 });
+
+  console.log('result', result);
+
+  return NextResponse.json(result, { status: 200 });
 }
 
 export async function POST(req: NextRequest) {
