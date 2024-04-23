@@ -36,9 +36,11 @@ export default function SingleShow({
   const theme = useMantineTheme();
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
-  const { data } = useSWR<ShowData>(`/api/show/${showId}`, fetcher, {
-    fallbackData: initialData,
-  });
+  // const { data } = useSWR<ShowData>(`/api/show/${showId}`, fetcher, {
+  //   fallbackData: initialData,
+  // });
+
+  const data = initialData;
 
   if (!data || !data.show || !data.seasons) return <div>404</div>;
 

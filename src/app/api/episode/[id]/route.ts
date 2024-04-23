@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/server/query/user';
+import { updateEpisodeWatch } from '@/app/actions/episode';
 
 export async function GET(
   req: NextRequest,
@@ -33,20 +34,12 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await getCurrentUser();
     const { watched } = await req.json();
     if (typeof watched !== 'boolean') throw new Error('Invalid Update');
 
-    const episode = await prisma.episode.update({
-      where: {
-        id: Number(params.id),
-        show: {
-          userId: user.id,
-        },
-      },
-      data: {
-        watched,
-      },
+    const episode = await updateEpisodeWatchj({
+      id: Number(params.id),
+      watched,
     });
 
     return NextResponse.json(episode, { status: 200 });

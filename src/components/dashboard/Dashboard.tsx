@@ -1,4 +1,6 @@
-'use client';
+// 'use client';
+
+'use server';
 
 import { Group } from '@mantine/core';
 import React from 'react';

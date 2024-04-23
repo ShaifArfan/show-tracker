@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, useMantineTheme } from '@mantine/core';
 import { Episode } from '@prisma/client';
 import React from 'react';
@@ -20,7 +22,7 @@ function Season({
       }}
     >
       {episodes.map((epi) => (
-        <EpiBtn epi={epi} key={epi.id} />
+        <EpiBtn epi={epi} key={`${epi.id}-${epi.watched}`} />
       ))}
     </Box>
   );

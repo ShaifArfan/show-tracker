@@ -64,9 +64,10 @@ export const createShow = async (data: CreateShowProps) => {
   return newShow;
 };
 
-export const getSingleShowData = async (showId: number, userId: string) => {
+export const getSingleShowData = async (showId: number) => {
+  const user = await getCurrentUser();
   const show = await prisma.show.findFirst({
-    where: { id: showId, userId },
+    where: { id: showId, userId: user.id },
     include: {
       episodes: true,
     },

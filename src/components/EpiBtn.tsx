@@ -1,36 +1,33 @@
+'use client';
+
 import { Button } from '@mantine/core';
 import { Episode } from '@prisma/client';
 import axios from 'axios';
-import React, { useState } from 'react';
-import useSWRMutation from 'swr/mutation';
+import React, { memo, useState } from 'react';
+import { updateEpisodeWatch } from '@/app/actions/episode';
 
 interface Props {
   epi: Episode;
 }
 
-async function toggleWatched(
-  url: string,
-  { arg }: { arg: { currentStatus: boolean } }
-) {
-  const res = await axios.put(url, {
-    watched: !arg.currentStatus,
-  });
-  return res.data;
-}
-
 function EpiBtn({ epi }: Props) {
   const [state, setState] = useState(epi);
-
-  const { trigger, isMutating } = useSWRMutation(
-    `/api/episode/${epi.id}`,
-    toggleWatched
-  );
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
-    const data = await trigger({
-      currentStatus: state.watched,
-    });
-    setState(data);
+    try {
+      setLoading(true);
+      const res = await updateEpisodeWatch({
+        id: epi.id,
+        watched: !state.watched,
+      });
+      setState(res);
+      // router.refresh();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,11 +36,15 @@ function EpiBtn({ epi }: Props) {
       color={state.watched ? 'yellow' : 'indigo'}
       p="xs"
       onClick={handleClick}
-      disabled={isMutating}
+      disabled={loading}
+      loading={loading}
     >
       S{state.seasonNumber} E{state.episodeNumber}
     </Button>
   );
 }
 
-export default EpiBtn;
+export default memo(
+  EpiBtn,
+  (prev, next) => prev.epi.watched === next.epi.watched
+);
