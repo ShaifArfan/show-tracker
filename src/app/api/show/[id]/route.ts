@@ -1,12 +1,12 @@
 import { handleError } from '@/lib/handleError';
 import prisma from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { getCurrentUser } from '@/server/query/user';
 import {
   deleteSingleShow,
   getCurrentShow,
   getSingleShowData,
-} from '@/modules/show';
-import { getCurrentUser } from '@/modules/user';
-import { NextRequest, NextResponse } from 'next/server';
+} from '@/server/query/show';
 
 export async function GET(
   req: NextRequest,

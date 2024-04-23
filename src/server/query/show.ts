@@ -1,6 +1,19 @@
+import 'server-only';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import { getCurrentUser } from './user';
+
+export const getMyShows = async () => {
+  const user = await getCurrentUser();
+
+  const shows = await prisma.show.findMany({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return shows;
+};
 
 export const getCurrentShow = async (showId: number, userId: string) => {
   const thisShow = await prisma.show.findFirst({
@@ -80,7 +93,7 @@ export const deleteSingleShow = async (id: number) => {
 
   await prisma.episode.deleteMany({
     where: {
-      showId: thisShow.id + 50,
+      showId: thisShow.id,
     },
   });
 

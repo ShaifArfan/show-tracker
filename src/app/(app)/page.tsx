@@ -1,15 +1,8 @@
-import prisma from '@/lib/prisma';
-import { getCurrentUser } from '@/modules/user';
 import Dashboard from '@/components/dashboard/Dashboard';
+import { getMyShows } from '@/server/query/show';
 
 async function page() {
-  const user = await getCurrentUser();
-
-  const shows = await prisma.show.findMany({
-    where: {
-      userId: user.id,
-    },
-  });
+  const shows = await getMyShows();
 
   return <Dashboard shows={shows} />;
 }

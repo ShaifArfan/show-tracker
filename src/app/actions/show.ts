@@ -1,8 +1,12 @@
 'use server';
 
 import { handleError } from '@/lib/handleError';
-import { CreateShowProps, createShow, deleteSingleShow } from '@/modules/show';
 import { revalidatePath } from 'next/cache';
+import {
+  CreateShowProps,
+  createShow,
+  deleteSingleShow,
+} from '@/server/query/show';
 
 export async function createShowAction(data: CreateShowProps) {
   try {

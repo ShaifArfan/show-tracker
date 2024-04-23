@@ -8,10 +8,11 @@
     "start": "next start",
     "postinstall": "prisma generate",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "seed": "prisma db seed"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/server/db/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",
@@ -34,6 +35,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^5.0.1",
+    "server-only": "^0.0.1",
     "swr": "^2.2.5",
     "zod": "^3.22.4"
   },

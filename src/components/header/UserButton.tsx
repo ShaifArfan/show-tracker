@@ -1,5 +1,5 @@
 import { UnstyledButton, Group, Avatar, Text, Box } from '@mantine/core';
-import { getCurrentUser } from '@/modules/user';
+import { getCurrentUser } from '@/server/query/user';
 import classes from './UserButton.module.css';
 import UserButtonActions from './UserButtonActions';
 

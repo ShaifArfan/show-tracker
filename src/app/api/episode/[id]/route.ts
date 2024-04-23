@@ -1,8 +1,8 @@
 import { handleError } from '@/lib/handleError';
 import prisma from '@/lib/prisma';
-import { getCurrentUser } from '@/modules/user';
 import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
+import { getCurrentUser } from '@/server/query/user';
 
 export async function GET(
   req: NextRequest,

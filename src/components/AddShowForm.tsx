@@ -23,7 +23,7 @@ function AddShowForm() {
       seasonNum: 0,
     },
     validate: {
-      title: (value) => value.length > 0 || 'Title is required',
+      title: (value) => (value.length > 0 ? null : 'Title is required'),
       epiAmount: (value) =>
         value > 0 ? null : 'Episode amount must be greater than 0',
       seasonNum: (value) =>

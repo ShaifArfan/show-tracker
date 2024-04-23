@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
-import { getCurrentUser } from '@/modules/user';
 import { NextRequest, NextResponse } from 'next/server';
 import { handleError } from '@/lib/handleError';
+import { getCurrentUser } from '@/server/query/user';
 
 export async function GET() {
   const user = await getCurrentUser();
