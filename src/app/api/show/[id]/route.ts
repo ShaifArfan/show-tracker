@@ -19,7 +19,7 @@ export async function GET(
     if (!thisShow)
       return NextResponse.json({ message: 'Show not found' }, { status: 404 });
 
-    const { show, seasons } = await getSingleShowData(thisShow.id, user.id);
+    const { show, seasons } = await getSingleShowData(thisShow.id);
     return NextResponse.json({ show, seasons }, { status: 200 });
   } catch (e) {
     return handleError(e);

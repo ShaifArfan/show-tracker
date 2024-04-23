@@ -1,29 +1,36 @@
 'use client';
 
+import { updateEpisodeWatchAction } from '@/app/actions/episode';
 import { Button } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { Episode } from '@prisma/client';
-import axios from 'axios';
 import React, { memo, useState } from 'react';
-import { updateEpisodeWatch } from '@/app/actions/episode';
 
 interface Props {
   epi: Episode;
 }
 
 function EpiBtn({ epi }: Props) {
+  // using the useState so that we can apply the button changes instantly. otherwise it need to wait for the show refetch.
   const [state, setState] = useState(epi);
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     try {
       setLoading(true);
-      const res = await updateEpisodeWatch({
+      const res = await updateEpisodeWatchAction({
         id: epi.id,
-        watched: !state.watched,
+        watched: !epi.watched,
       });
       setState(res);
-      // router.refresh();
     } catch (e) {
+      const error =
+        e instanceof Error ? e : new Error('Failed to update episode');
+      notifications.show({
+        title: 'Error',
+        message: error.message,
+        color: 'red',
+      });
       console.error(e);
     } finally {
       setLoading(false);
