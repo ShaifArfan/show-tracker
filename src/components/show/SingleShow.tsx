@@ -3,9 +3,7 @@
 import React, { useState } from 'react';
 import { Episode, Show } from '@prisma/client';
 import { Group, Tabs, useMantineTheme } from '@mantine/core';
-import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
-import { fetcher } from '@/lib/swrFetcher';
 import ShowForm from '@/components/ShowForm';
 import Season from './Season';
 import DeleteShowButton from '../DeleteShowButton';

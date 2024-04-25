@@ -2,7 +2,6 @@ import { addEpisodes, removeEpisodes } from '@/app/actions/episode';
 import { Button, Group, NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import axios from 'axios';
 import { useState } from 'react';
 
 interface FormValues {
