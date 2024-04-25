@@ -46,16 +46,16 @@ export const getLastEpisodeNum = async ({
 };
 
 // TODO also add a higher limit
-const ADD_REMOVE_EPISODES = z.object({
-  epiAmount: z.number().gt(0).lte(100),
+const UPDATE_EPISODES_PROPS = z.object({
+  epiAmount: z.number().gt(0).lte(10000),
   seasonNum: z.number().gt(0),
   showId: z.number(),
 });
 
-interface Add_Remove_Episodes extends z.infer<typeof ADD_REMOVE_EPISODES> {}
+interface Update_Episodes_Props extends z.infer<typeof UPDATE_EPISODES_PROPS> {}
 
-export async function addEpisodes(data: Add_Remove_Episodes) {
-  const parseResult = await ADD_REMOVE_EPISODES.safeParse(data);
+export async function addEpisodes(data: Update_Episodes_Props) {
+  const parseResult = await UPDATE_EPISODES_PROPS.safeParse(data);
   if (!parseResult.success) {
     // TODO need to think about better error handling
     throw parseResult.error;
@@ -81,8 +81,8 @@ export async function addEpisodes(data: Add_Remove_Episodes) {
   return createdEps;
 }
 
-export async function removeEpisodes(data: Add_Remove_Episodes) {
-  const parseResult = await ADD_REMOVE_EPISODES.safeParse(data);
+export async function removeEpisodes(data: Update_Episodes_Props) {
+  const parseResult = await UPDATE_EPISODES_PROPS.safeParse(data);
   if (!parseResult.success) {
     // TODO need to think about better error handling
     throw parseResult.error;
@@ -110,3 +110,36 @@ export async function removeEpisodes(data: Add_Remove_Episodes) {
   revalidatePath(`/shows/${showId}`);
   return delEps;
 }
+
+export const rangeWatchEpisodes = async (data: Update_Episodes_Props) => {
+  const parseResult = await UPDATE_EPISODES_PROPS.safeParse(data);
+  if (!parseResult.success) {
+    // TODO need to think about better error handling
+    throw parseResult.error;
+  }
+  const { epiAmount, seasonNum, showId } = parseResult.data;
+  const lastEpisodeNum = await getLastEpisodeNum({
+    seasonNum,
+    showId,
+  });
+
+  if (lastEpisodeNum < epiAmount) {
+    throw new Error('Not enough episodes to Update');
+  }
+
+  const episodes = await prisma.episode.updateMany({
+    where: {
+      showId,
+      seasonNumber: seasonNum,
+      episodeNumber: {
+        lte: epiAmount,
+      },
+    },
+    data: {
+      watched: true,
+    },
+  });
+
+  revalidatePath(`/shows/${showId}`);
+  return episodes;
+};

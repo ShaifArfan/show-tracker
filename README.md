@@ -7,7 +7,7 @@
 - [x] UI (Mantine-v7)
 - [ ] Features
 
-  - [ ] Range Watch
+  - [x] Range Watch
 
 - [ ] move from `swr` to next.js fetch with tag and revalidate
 

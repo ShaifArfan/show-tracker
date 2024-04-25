@@ -1,4 +1,8 @@
-import { addEpisodes, removeEpisodes } from '@/app/actions/episode';
+import {
+  addEpisodes,
+  rangeWatchEpisodes,
+  removeEpisodes,
+} from '@/app/actions/episode';
 import { Button, Group, NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -10,7 +14,7 @@ interface FormValues {
   action: FormAction;
 }
 
-type FormAction = 'add' | 'remove';
+type FormAction = 'add' | 'remove' | 'range_watch';
 
 interface Props {
   activeTab: string | null;
@@ -65,6 +69,19 @@ function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
           });
           break;
         }
+        case 'range_watch': {
+          const res = await rangeWatchEpisodes({
+            epiAmount: form.values.epiAmount,
+            seasonNum: form.values.seasonNum,
+            showId,
+          });
+          notifications.show({
+            title: 'Successfully watched Episodes',
+            message: `You have watched ${res.count} episodes`,
+            color: 'green',
+          });
+          break;
+        }
         default:
           break;
       }
@@ -107,7 +124,7 @@ function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
         <NumberInput label="season Num" {...form.getInputProps('seasonNum')} />
         <Select
           label="Action"
-          data={['add', 'remove']}
+          data={['add', 'remove', 'range_watch']}
           {...form.getInputProps('action')}
         />
         <Button type="submit" disabled={mutating} loading={mutating}>
