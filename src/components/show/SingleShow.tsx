@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { Episode, Show } from '@prisma/client';
-import { Group, Tabs, useMantineTheme } from '@mantine/core';
+import { Group, Paper, Tabs, Title, useMantineTheme } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import ShowForm from '@/components/ShowForm';
+import ShowForm from '@/components/show/ShowForm';
 import Season from './Season';
 import DeleteShowButton from '../DeleteShowButton';
 
@@ -46,22 +46,23 @@ export default function SingleShow({
 
   return (
     <>
-      <Group>
-        <h3>{show.title}</h3>
-        <DeleteShowButton
+      <Paper bg="var(--mantine-color-gray-3)" p="md">
+        <Group mb="sm">
+          <Title order={2}>{show.title}</Title>
+          <DeleteShowButton
+            showId={showId}
+            onDelete={() => {
+              router.push('/');
+            }}
+          />
+        </Group>
+        <ShowForm
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          seasons={seasons}
           showId={showId}
-          onDelete={() => {
-            router.push('/');
-          }}
         />
-      </Group>
-      <ShowForm
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        seasons={seasons}
-        showId={showId}
-      />
-
+      </Paper>
       {!seasons || seasons?.length < 1 ? (
         'No Episodes'
       ) : (

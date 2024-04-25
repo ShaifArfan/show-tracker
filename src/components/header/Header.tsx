@@ -7,7 +7,9 @@ function Header() {
   return (
     <Group justify="space-between">
       <Link href="/">
-        <Title>Show Tracker</Title>
+        <Title order={1} size={20}>
+          Show Tracker
+        </Title>
       </Link>
       <Box>
         <UserButton />

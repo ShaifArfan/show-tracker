@@ -4,11 +4,12 @@ import { createShowAction } from '@/app/actions/show';
 import {
   Box,
   Button,
-  Group,
+  Flex,
   NumberInput,
   Paper,
   Space,
   TextInput,
+  Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -57,16 +58,27 @@ function AddShowForm() {
 
   return (
     <Paper bg="var(--mantine-color-gray-3)" p="md">
+      <Title order={3} mb="sm">
+        Add New Shows
+      </Title>
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
       >
-        <Group align="flex-start">
+        <Flex
+          align="flex-start"
+          gap="md"
+          direction={{
+            base: 'column',
+            xs: 'row',
+          }}
+        >
           <TextInput
             withAsterisk
             label="Title"
+            w="100%"
             style={{ flex: 1 }}
             placeholder='e.g. "Breaking Bad"'
             {...form.getInputProps('title')}
@@ -74,17 +86,30 @@ function AddShowForm() {
           <NumberInput
             withAsterisk
             label="Episode Amount"
+            w="100%"
             style={{ flex: 1 }}
             {...form.getInputProps('epiAmount')}
           />
           <NumberInput
             withAsterisk
-            label="Season Number"
+            label="Season No"
+            w="100%"
             style={{ flex: 1 }}
             {...form.getInputProps('seasonNum')}
           />
-          <Box style={{ alignSelf: 'flex-center', flexGrow: 'initial' }}>
-            <Space h={24} />
+          <Box
+            style={{ alignSelf: 'flex-center', flexGrow: 'initial' }}
+            w={{
+              base: '100%',
+              xs: 'auto',
+            }}
+          >
+            <Space
+              h={{
+                base: 0,
+                xs: '24',
+              }}
+            />
             <Button
               type="submit"
               loading={loading}
@@ -94,7 +119,7 @@ function AddShowForm() {
               Add Show
             </Button>
           </Box>
-        </Group>
+        </Flex>
       </form>
     </Paper>
   );

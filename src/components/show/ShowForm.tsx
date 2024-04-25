@@ -3,7 +3,7 @@ import {
   rangeWatchEpisodes,
   removeEpisodes,
 } from '@/app/actions/episode';
-import { Button, Group, NumberInput, Select } from '@mantine/core';
+import { Box, Button, Flex, NumberInput, Select, Space } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
@@ -36,10 +36,22 @@ function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
       seasonNum: 1,
       action: 'add',
     },
+    validate: {
+      epiAmount: (value) =>
+        value < 1
+          ? 'Episode amount must be greater than 0'
+          : value > 10000
+            ? 'Episode amount must be less than 10,000'
+            : null,
+      seasonNum: (value) =>
+        value > 0 ? null : 'Season number must be greater than 0',
+    },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    form.validate();
+    if (!form.isValid()) return;
     setMutating(true);
     try {
       switch (form.values.action) {
@@ -119,18 +131,53 @@ function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Group>
-        <NumberInput label="epi amount" {...form.getInputProps('epiAmount')} />
-        <NumberInput label="season Num" {...form.getInputProps('seasonNum')} />
+      <Flex
+        align="flex-start"
+        gap="md"
+        direction={{
+          base: 'column',
+          xs: 'row',
+        }}
+      >
+        <NumberInput
+          label="Episode Amount"
+          w="100%"
+          {...form.getInputProps('epiAmount')}
+        />
+        <NumberInput
+          w="100%"
+          label="Season No."
+          {...form.getInputProps('seasonNum')}
+        />
         <Select
-          label="Action"
+          w="100%"
+          label="Action Type"
           data={['add', 'remove', 'range_watch']}
           {...form.getInputProps('action')}
         />
-        <Button type="submit" disabled={mutating} loading={mutating}>
-          Submit
-        </Button>
-      </Group>
+        <Box
+          style={{ alignSelf: 'flex-center', flexGrow: 'initial' }}
+          w={{
+            base: '100%',
+            xs: 'auto',
+          }}
+        >
+          <Space
+            h={{
+              base: 0,
+              xs: '24',
+            }}
+          />
+          <Button
+            type="submit"
+            disabled={mutating}
+            loading={mutating}
+            fullWidth
+          >
+            Update
+          </Button>
+        </Box>
+      </Flex>
     </form>
   );
 }
