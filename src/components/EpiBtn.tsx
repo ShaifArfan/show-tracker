@@ -40,7 +40,7 @@ function EpiBtn({ epi }: Props) {
   return (
     <Button
       key={state.id}
-      color={state.watched ? 'yellow' : 'indigo'}
+      color={state.watched ? 'yellow' : epi.isFiller ? 'red' : 'indigo'}
       p="xs"
       onClick={handleClick}
       disabled={loading}
@@ -53,5 +53,9 @@ function EpiBtn({ epi }: Props) {
 
 export default memo(
   EpiBtn,
-  (prev, next) => prev.epi.watched === next.epi.watched
+  (prev, next) =>
+    prev.epi.watched === next.epi.watched &&
+    prev.epi.isFiller === next.epi.isFiller
 );
+
+// export default EpiBtn;

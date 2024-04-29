@@ -2,11 +2,23 @@
 
 import React, { useState } from 'react';
 import { Episode, Show } from '@prisma/client';
-import { Group, Paper, Tabs, Title, useMantineTheme } from '@mantine/core';
+import {
+  Button,
+  Drawer,
+  Flex,
+  Group,
+  Paper,
+  Tabs,
+  Title,
+  em,
+  useMantineTheme,
+} from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import ShowForm from '@/components/show/ShowForm';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import Season from './Season';
 import DeleteShowButton from '../DeleteShowButton';
+import FillerForm from './FillerForm';
 
 interface ShowWithEpi extends Show {
   episodes: Episode[];
@@ -33,12 +45,9 @@ export default function SingleShow({
   const router = useRouter();
   const theme = useMantineTheme();
   const [activeTab, setActiveTab] = useState<string | null>(null);
-
-  // const { data } = useSWR<ShowData>(`/api/show/${showId}`, fetcher, {
-  //   fallbackData: initialData,
-  // });
-
   const data = initialData;
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+  const [opened, { open, close }] = useDisclosure(false);
 
   if (!data || !data.show || !data.seasons) return <div>404</div>;
 
@@ -47,15 +56,20 @@ export default function SingleShow({
   return (
     <>
       <Paper bg="var(--mantine-color-gray-3)" p="md">
-        <Group mb="sm">
-          <Title order={2}>{show.title}</Title>
-          <DeleteShowButton
-            showId={showId}
-            onDelete={() => {
-              router.push('/');
-            }}
-          />
-        </Group>
+        <Flex gap="md" justify="space-between">
+          <Group mb="sm">
+            <Title order={2}>{show.title}</Title>
+            <DeleteShowButton
+              showId={showId}
+              onDelete={() => {
+                router.push('/');
+              }}
+            />
+          </Group>
+          <Button variant="light" onClick={open}>
+            Update Filler
+          </Button>
+        </Flex>
         <ShowForm
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -87,7 +101,6 @@ export default function SingleShow({
               mt={theme.spacing.md}
             >
               <Season
-                seasonNum={season.seasonNumber}
                 episodes={show.episodes
                   .filter((ep) => ep.seasonNumber === season.seasonNumber)
                   .sort((a, b) => a.episodeNumber - b.episodeNumber)}
@@ -96,6 +109,14 @@ export default function SingleShow({
           ))}
         </Tabs>
       )}
+      <Drawer
+        opened={opened}
+        onClose={close}
+        title="Update Filler"
+        position={isMobile ? 'bottom' : 'right'}
+      >
+        <FillerForm seasons={seasons} showId={showId} />
+      </Drawer>
     </>
   );
 }

@@ -5,13 +5,7 @@ import { Episode } from '@prisma/client';
 import React from 'react';
 import EpiBtn from '../EpiBtn';
 
-function Season({
-  seasonNum,
-  episodes,
-}: {
-  seasonNum: number;
-  episodes: Episode[];
-}) {
+function Season({ episodes }: { episodes: Episode[] }) {
   const theme = useMantineTheme();
   return (
     <Box
