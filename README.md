@@ -8,6 +8,9 @@
 - [ ] Features
 
   - [x] Range Watch
+  - [x] Filler Episode Mark
+  - [x] Dashboard with watched progress
+  - [ ] Theme change (only dark mode)
 
 - [ ] move from `swr` to next.js fetch with tag and revalidate
 
