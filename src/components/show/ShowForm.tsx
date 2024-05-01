@@ -3,8 +3,17 @@ import {
   rangeWatchEpisodes,
   removeEpisodes,
 } from '@/app/actions/episode';
-import { Box, Button, Flex, NumberInput, Select, Space } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Drawer,
+  Flex,
+  NumberInput,
+  Select,
+  Space,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 
@@ -28,7 +37,12 @@ interface Props {
   }[];
 }
 
-function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
+export default function ShowForm({
+  activeTab,
+  setActiveTab,
+  seasons,
+  showId,
+}: Props) {
   const [mutating, setMutating] = useState(false);
   const form = useForm<FormValues>({
     initialValues: {
@@ -186,4 +200,36 @@ function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
   );
 }
 
-export default ShowForm;
+export function DisplayShowForm({ ...props }: Props) {
+  const [opened, { open, close }] = useDisclosure(false);
+
+  return (
+    <>
+      <Box visibleFrom="sm">
+        <ShowForm {...props} />
+      </Box>
+      <Box hiddenFrom="sm">
+        <Button onClick={open} fullWidth>
+          Update Show Episodes
+        </Button>
+        <Drawer
+          onClose={close}
+          opened={opened}
+          position="bottom"
+          title="Update Show Episodes"
+          styles={{
+            title: {
+              fontSize: 'var(--mantine-font-size-xl)',
+              fontWeight: 'bold',
+            },
+            content: {
+              height: 'max-content',
+            },
+          }}
+        >
+          <ShowForm {...props} />
+        </Drawer>
+      </Box>
+    </>
+  );
+}

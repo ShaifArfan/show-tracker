@@ -8,13 +8,14 @@ import {
   Flex,
   Group,
   Paper,
+  Space,
   Tabs,
   Title,
   em,
   useMantineTheme,
 } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import ShowForm from '@/components/show/ShowForm';
+import ShowForm, { DisplayShowForm } from '@/components/show/ShowForm';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import Season from './Season';
 import DeleteShowButton from '../DeleteShowButton';
@@ -64,9 +65,7 @@ export default function SingleShow({
             xs: 'row',
           }}
         >
-          <Group mb="sm">
-            <Title order={2}>{show.title}</Title>
-          </Group>
+          <Title order={2}>{show.title}</Title>
           <Flex gap="md" align="center">
             <DeleteShowButton
               showId={showId}
@@ -79,7 +78,8 @@ export default function SingleShow({
             </Button>
           </Flex>
         </Flex>
-        <ShowForm
+        <Space h="sm" />
+        <DisplayShowForm
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           seasons={seasons}

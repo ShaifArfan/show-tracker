@@ -4,6 +4,7 @@ import { createShowAction } from '@/app/actions/show';
 import {
   Box,
   Button,
+  Drawer,
   Flex,
   NumberInput,
   Paper,
@@ -12,10 +13,15 @@ import {
   Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import React, { useState } from 'react';
 
-function AddShowForm() {
+interface AddShowFormProps {
+  withTitle?: boolean;
+}
+
+export default function AddShowForm({ withTitle }: AddShowFormProps) {
   const [loading, setLoading] = useState(false);
   const form = useForm({
     initialValues: {
@@ -58,9 +64,11 @@ function AddShowForm() {
 
   return (
     <Paper bg="var(--mantine-color-gray-3)" p="md">
-      <Title order={3} mb="sm">
-        Add New Shows
-      </Title>
+      {withTitle && (
+        <Title order={3} mb="sm">
+          Add New Shows
+        </Title>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -129,4 +137,42 @@ function AddShowForm() {
   );
 }
 
-export default AddShowForm;
+export function AddShowDisplay() {
+  const [opened, { open, close }] = useDisclosure(false);
+
+  return (
+    <>
+      <Box visibleFrom="sm">
+        <AddShowForm withTitle />
+      </Box>
+      <Box hiddenFrom="sm">
+        <Button onClick={open} fullWidth>
+          Add Shows
+        </Button>
+        <Drawer
+          onClose={close}
+          opened={opened}
+          position="bottom"
+          title="Add New Show"
+          styles={{
+            header: {
+              background: 'var(--mantine-color-gray-3)',
+            },
+            title: {
+              fontSize: 'var(--mantine-font-size-xl)',
+              fontWeight: 'bold',
+            },
+            content: {
+              height: 'max-content',
+            },
+            body: {
+              padding: 0,
+            },
+          }}
+        >
+          <AddShowForm />
+        </Drawer>
+      </Box>
+    </>
+  );
+}

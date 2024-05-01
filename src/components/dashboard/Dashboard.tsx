@@ -1,12 +1,10 @@
-// 'use client';
-
 'use server';
 
 import { Group } from '@mantine/core';
 import React from 'react';
 import { Show } from '@prisma/client';
 import Link from 'next/link';
-import AddShowForm from '../AddShowForm';
+import { AddShowDisplay } from '../AddShowForm';
 import DeleteShowButton from '../DeleteShowButton';
 
 interface Props {
@@ -16,7 +14,7 @@ interface Props {
 function Dashboard({ shows }: Props) {
   return (
     <div>
-      <AddShowForm />
+      <AddShowDisplay />
       {shows.length > 0
         ? shows.map((show) => (
             <Group key={show.id}>
