@@ -85,6 +85,7 @@ export default function SingleShow({
           showId={showId}
         />
       </Paper>
+      <Space h="md" />
       {!seasons || seasons?.length < 1 ? (
         'No Episodes'
       ) : (

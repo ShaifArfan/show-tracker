@@ -10,9 +10,49 @@ export const getMyShows = async () => {
     where: {
       userId: user.id,
     },
+    include: {
+      _count: {
+        select: {
+          episodes: true,
+        },
+      },
+    },
   });
 
-  return shows;
+  const watchedCount = await prisma.episode.groupBy({
+    by: ['showId', 'watched'],
+    where: {
+      showId: {
+        in: shows.map((show) => show.id),
+      },
+      AND: {
+        watched: {
+          equals: true,
+        },
+      },
+    },
+    _count: {
+      _all: true,
+    },
+  });
+
+  const showsWithCounts = shows.map((show) => {
+    const showCounts = watchedCount.find((count) => count.showId === show.id);
+    return {
+      ...show,
+      _count: {
+        episodes: show._count.episodes,
+        watched: showCounts?._count._all || 0,
+      },
+    };
+  });
+
+  return showsWithCounts;
+
+  // }
+  // return withCounts? shows.map((show) => {
+
+  // });
 };
 
 export const getCurrentShow = async (showId: number, userId: string) => {
