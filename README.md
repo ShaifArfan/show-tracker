@@ -4,9 +4,13 @@
 - [x] PostgreSQL - (supabase)
   - [ ] Switch to vercel postgresql
 - [x] Authentication - [next-auth](https://github.com/nextauthjs/)
-- [x] UI (Mantine-v7)
+- [x] UI (Mantine-v7l)
+- [ ] Updates
+    - [ ] Clear Show Form on Submit
+    - [ ] Delete Confirmation
+    - [ ] Email Confirmation
+    - [ ] Password Reset & Forget Password
 - [ ] Features
-
   - [x] Range Watch
   - [x] Filler Episode Mark
     - [ ] range validation (start < end)
