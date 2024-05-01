@@ -6,7 +6,6 @@ import {
   Button,
   Drawer,
   Flex,
-  Group,
   Paper,
   Space,
   Tabs,
@@ -15,7 +14,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import ShowForm, { DisplayShowForm } from '@/components/show/ShowForm';
+import { DisplayShowForm } from '@/components/show/ShowForm';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import Season from './Season';
 import DeleteShowButton from '../DeleteShowButton';

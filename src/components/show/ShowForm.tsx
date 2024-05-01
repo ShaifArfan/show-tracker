@@ -25,7 +25,8 @@ interface FormValues {
 
 type FormAction = 'add' | 'remove' | 'range_watch';
 
-interface Props {
+interface ShowFormProps {
+  onSuccess?: () => void;
   activeTab: string | null;
   setActiveTab: React.Dispatch<React.SetStateAction<string | null>>;
   showId: number;
@@ -42,7 +43,8 @@ export default function ShowForm({
   setActiveTab,
   seasons,
   showId,
-}: Props) {
+  onSuccess,
+}: ShowFormProps) {
   const [mutating, setMutating] = useState(false);
   const form = useForm<FormValues>({
     initialValues: {
@@ -128,6 +130,10 @@ export default function ShowForm({
           setActiveTab(`s${seasons[0].seasonNumber}` || null);
         }
       }
+
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (err) {
       const myError =
         err instanceof Error ? err : new Error('Failed to update episode!!');
@@ -170,6 +176,7 @@ export default function ShowForm({
           label="Action Type"
           data={['add', 'remove', 'range_watch']}
           size="md"
+          comboboxProps={{ withinPortal: false }}
           {...form.getInputProps('action')}
         />
         <Box
@@ -200,7 +207,7 @@ export default function ShowForm({
   );
 }
 
-export function DisplayShowForm({ ...props }: Props) {
+export function DisplayShowForm({ ...props }: ShowFormProps) {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -227,7 +234,12 @@ export function DisplayShowForm({ ...props }: Props) {
             },
           }}
         >
-          <ShowForm {...props} />
+          <ShowForm
+            {...props}
+            onSuccess={() => {
+              close();
+            }}
+          />
         </Drawer>
       </Box>
     </>

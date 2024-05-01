@@ -19,9 +19,13 @@ import React, { useState } from 'react';
 
 interface AddShowFormProps {
   withTitle?: boolean;
+  onSuccess?: () => void;
 }
 
-export default function AddShowForm({ withTitle }: AddShowFormProps) {
+export default function AddShowForm({
+  withTitle,
+  onSuccess,
+}: AddShowFormProps) {
   const [loading, setLoading] = useState(false);
   const form = useForm({
     initialValues: {
@@ -50,6 +54,10 @@ export default function AddShowForm({ withTitle }: AddShowFormProps) {
         message: `"${res?.title}" has been added`,
         color: 'green',
       });
+
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (e) {
       const error = e instanceof Error ? e : new Error('Failed to create show');
       notifications.show({
@@ -170,7 +178,7 @@ export function AddShowDisplay() {
             },
           }}
         >
-          <AddShowForm />
+          <AddShowForm onSuccess={() => close()} />
         </Drawer>
       </Box>
     </>
