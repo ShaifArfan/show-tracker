@@ -86,6 +86,8 @@ function FillerForm({ seasons, showId }: FillerFormProps) {
           }))}
           comboboxProps={{ withinPortal: false }}
           disabled={isLoading}
+          // fz="md"
+          size="md"
           {...form.getInputProps('season')}
         />
         <Textarea
@@ -93,6 +95,12 @@ function FillerForm({ seasons, showId }: FillerFormProps) {
           rows={5}
           maxRows={5}
           disabled={isLoading}
+          size="md"
+          styles={{
+            input: {
+              // fontSize: '16px',
+            },
+          }}
           {...form.getInputProps('fillerList')}
         />
 

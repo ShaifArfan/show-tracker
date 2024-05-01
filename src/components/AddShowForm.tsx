@@ -79,6 +79,7 @@ function AddShowForm() {
             withAsterisk
             label="Title"
             w="100%"
+            size="md"
             style={{ flex: 1 }}
             placeholder='e.g. "Breaking Bad"'
             {...form.getInputProps('title')}
@@ -87,12 +88,14 @@ function AddShowForm() {
             withAsterisk
             label="Episode Amount"
             w="100%"
+            size="md"
             style={{ flex: 1 }}
             {...form.getInputProps('epiAmount')}
           />
           <NumberInput
             withAsterisk
             label="Season No"
+            size="md"
             w="100%"
             style={{ flex: 1 }}
             {...form.getInputProps('seasonNum')}
@@ -114,6 +117,7 @@ function AddShowForm() {
               type="submit"
               loading={loading}
               disabled={loading}
+              size="md"
               fullWidth
             >
               Add Show

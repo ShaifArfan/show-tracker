@@ -142,17 +142,20 @@ function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
         <NumberInput
           label="Episode Amount"
           w="100%"
+          size="md"
           {...form.getInputProps('epiAmount')}
         />
         <NumberInput
           w="100%"
           label="Season No."
+          size="md"
           {...form.getInputProps('seasonNum')}
         />
         <Select
           w="100%"
           label="Action Type"
           data={['add', 'remove', 'range_watch']}
+          size="md"
           {...form.getInputProps('action')}
         />
         <Box
@@ -172,6 +175,7 @@ function ShowForm({ activeTab, setActiveTab, seasons, showId }: Props) {
             type="submit"
             disabled={mutating}
             loading={mutating}
+            size="md"
             fullWidth
           >
             Update

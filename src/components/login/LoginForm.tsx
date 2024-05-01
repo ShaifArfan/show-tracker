@@ -65,6 +65,7 @@ export function LoginForm() {
             label="Email"
             placeholder="you@mantine.dev"
             required
+            size="md"
             {...form.getInputProps('email')}
           />
           <PasswordInput
@@ -72,6 +73,7 @@ export function LoginForm() {
             placeholder="Your password"
             required
             mt="md"
+            size="md"
             {...form.getInputProps('password')}
           />
           <Group justify="space-between" mt="lg">

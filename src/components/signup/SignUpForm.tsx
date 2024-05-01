@@ -109,18 +109,21 @@ export function SignUpForm() {
               label="Name"
               placeholder="Your name"
               required
+              size="md"
               {...form.getInputProps('name')}
             />
             <TextInput
               label="Email"
               placeholder="you@mantine.dev"
               required
+              size="md"
               {...form.getInputProps('email')}
             />
             <PasswordInput
               label="Password"
               placeholder="Your password"
               required
+              size="md"
               {...form.getInputProps('password')}
             />
           </Stack>
