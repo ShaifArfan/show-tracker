@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate --schema=./src/server/db/schema.prisma",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "seed": "prisma db seed"
