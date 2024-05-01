@@ -13,7 +13,7 @@ export async function UserButton() {
         <Group>
           <Avatar radius="xl">{user.name.charAt(0).toUpperCase()}</Avatar>
 
-          <div style={{ flex: 1 }}>
+          <Box style={{ flex: 1 }} visibleFrom="sm">
             <Text size="sm" fw={500}>
               {user.name}
             </Text>
@@ -21,7 +21,7 @@ export async function UserButton() {
             <Text c="dimmed" size="xs">
               {user.email}
             </Text>
-          </div>
+          </Box>
           <UserButtonActions />
         </Group>
       </UnstyledButton>
