@@ -114,6 +114,7 @@ export function SignUpForm() {
             />
             <TextInput
               label="Email"
+              type="email"
               placeholder="you@mantine.dev"
               required
               size="md"

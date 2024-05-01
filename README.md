@@ -9,6 +9,7 @@
 
   - [x] Range Watch
   - [x] Filler Episode Mark
+    - [ ] range validation (start < end)
   - [x] Dashboard with watched progress
   - [ ] Theme change (only dark mode)
 
