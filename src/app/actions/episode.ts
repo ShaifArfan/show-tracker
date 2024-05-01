@@ -190,6 +190,7 @@ export const updateFiller = async (data: Update_Filler_Props) => {
     }
   });
 
+  // update filler episodes
   const eps = await prisma.episode.updateMany({
     where: {
       showId,
@@ -203,6 +204,7 @@ export const updateFiller = async (data: Update_Filler_Props) => {
     },
   });
 
+  // updated non-filler episodes
   await prisma.episode.updateMany({
     where: {
       showId,
@@ -216,6 +218,7 @@ export const updateFiller = async (data: Update_Filler_Props) => {
     },
   });
 
+  // get updated filler list
   const updatedFillers = await prisma.episode.findMany({
     where: {
       showId,
