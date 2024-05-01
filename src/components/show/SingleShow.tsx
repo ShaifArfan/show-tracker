@@ -56,19 +56,28 @@ export default function SingleShow({
   return (
     <>
       <Paper bg="var(--mantine-color-gray-3)" p="md">
-        <Flex gap="md" justify="space-between">
+        <Flex
+          gap="md"
+          justify="space-between"
+          direction={{
+            base: 'column',
+            xs: 'row',
+          }}
+        >
           <Group mb="sm">
             <Title order={2}>{show.title}</Title>
+          </Group>
+          <Flex gap="md" align="center">
             <DeleteShowButton
               showId={showId}
               onDelete={() => {
                 router.push('/');
               }}
             />
-          </Group>
-          <Button variant="light" onClick={open}>
-            Update Filler
-          </Button>
+            <Button variant="light" onClick={open} fullWidth>
+              Update Filler
+            </Button>
+          </Flex>
         </Flex>
         <ShowForm
           activeTab={activeTab}

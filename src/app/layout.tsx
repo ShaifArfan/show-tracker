@@ -1,11 +1,9 @@
-import { ColorSchemeScript, Container, MantineProvider } from '@mantine/core';
+import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 
 // mantine styles
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
-import { SessionProvider } from 'next-auth/react';
-import Header from '@/components/header/Header';
 
 // export const metadata = {
 //   title: 'Next.js',
@@ -24,7 +22,7 @@ export default function RootLayout({
         {/* <SessionProvider> */}
         <MantineProvider defaultColorScheme="light">
           <Notifications />
-          <Container>{children}</Container>
+          {children}
         </MantineProvider>
         {/* </SessionProvider> */}
       </body>
