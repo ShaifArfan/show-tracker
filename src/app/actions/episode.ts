@@ -216,12 +216,23 @@ export const updateFiller = async (data: Update_Filler_Props) => {
     },
   });
 
+  const updatedFillers = await prisma.episode.findMany({
+    where: {
+      showId,
+      seasonNumber: season,
+      isFiller: true,
+    },
+    select: {
+      episodeNumber: true,
+    },
+  });
+
   revalidatePath(`/shows/${showId}`);
   return {
     show_id: showId,
     season,
     update_count: eps.count,
-    fillerList: fillerEpArray.join(', '),
+    fillerList: updatedFillers.map((item) => item.episodeNumber).join(', '),
     failedEp: failedEp.join(', '),
   };
 };
