@@ -1,9 +1,7 @@
 'use client';
 
-// Error components must be Client Components
-
+import { Button, Code, Flex } from '@mantine/core';
 import { useEffect } from 'react';
-import { json } from 'stream/consumers';
 
 export default function Error({
   error,
@@ -18,10 +16,10 @@ export default function Error({
   }, [error]);
 
   return (
-    <div>
+    <Flex align="center" justify="center" direction="column" gap="md">
       <h2>Something went wrong!</h2>
-      <code>{JSON.stringify(error, null, 2)}</code>
-      <button
+      <Code block>{JSON.stringify(error, null, 2)}</Code>
+      <Button
         type="button"
         onClick={
           // Attempt to recover by trying to re-render the segment
@@ -29,7 +27,7 @@ export default function Error({
         }
       >
         Try again
-      </button>
-    </div>
+      </Button>
+    </Flex>
   );
 }
