@@ -114,6 +114,9 @@ export default function ShowForm({
           break;
       }
 
+      // reset form
+      form.reset();
+
       // set tabs
       if (form.values.action === 'add') {
         if (form.values.seasonNum > seasons.length) {

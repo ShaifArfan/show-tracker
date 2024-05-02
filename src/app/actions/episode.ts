@@ -228,6 +228,9 @@ export const updateFiller = async (data: Update_Filler_Props) => {
     select: {
       episodeNumber: true,
     },
+    orderBy: {
+      episodeNumber: 'asc',
+    },
   });
 
   revalidatePath(`/shows/${showId}`);
