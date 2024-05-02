@@ -116,7 +116,10 @@ export const getSingleShowData = async (showId: number) => {
   const seasons = await prisma.episode.groupBy({
     by: ['seasonNumber'],
     where: {
-      showId,
+      showId: show.id,
+    },
+    orderBy: {
+      seasonNumber: 'asc',
     },
     _count: {
       _all: true,

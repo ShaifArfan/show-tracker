@@ -1,7 +1,8 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { updateEpisodeWatch } from '@/server/query/episode';
+import { getLastEpisodeNum, updateEpisodeWatch } from '@/server/query/episode';
+import { getCurrentUser } from '@/server/query/user';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -24,26 +25,6 @@ export async function updateEpisodeWatchAction({
     throw new Error('Failed to update episode!!');
   }
 }
-
-// TODO move it to queries
-export const getLastEpisodeNum = async ({
-  showId,
-  seasonNum,
-}: {
-  showId: number;
-  seasonNum: number;
-}) => {
-  const lastEpi = await prisma.episode.findFirst({
-    where: {
-      showId,
-      seasonNumber: seasonNum,
-    },
-    orderBy: {
-      episodeNumber: 'desc',
-    },
-  });
-  return lastEpi?.episodeNumber || 0;
-};
 
 const UPDATE_EPISODES_PROPS = z.object({
   epiAmount: z.number().gt(0).lte(10000),
@@ -81,6 +62,7 @@ export async function addEpisodes(data: Update_Episodes_Props) {
 }
 
 export async function removeEpisodes(data: Update_Episodes_Props) {
+  const user = await getCurrentUser();
   const parseResult = await UPDATE_EPISODES_PROPS.safeParse(data);
   if (!parseResult.success) {
     // TODO need to think about better error handling
@@ -98,6 +80,9 @@ export async function removeEpisodes(data: Update_Episodes_Props) {
 
   const delEps = await prisma.episode.deleteMany({
     where: {
+      show: {
+        userId: user.id,
+      },
       showId,
       seasonNumber: seasonNum,
       episodeNumber: {
@@ -111,6 +96,7 @@ export async function removeEpisodes(data: Update_Episodes_Props) {
 }
 
 export const rangeWatchEpisodes = async (data: Update_Episodes_Props) => {
+  const user = await getCurrentUser();
   const parseResult = await UPDATE_EPISODES_PROPS.safeParse(data);
   if (!parseResult.success) {
     // TODO need to think about better error handling
@@ -129,6 +115,9 @@ export const rangeWatchEpisodes = async (data: Update_Episodes_Props) => {
   const episodes = await prisma.episode.updateMany({
     where: {
       showId,
+      show: {
+        userId: user.id,
+      },
       seasonNumber: seasonNum,
       episodeNumber: {
         lte: epiAmount,
@@ -151,6 +140,7 @@ const UPDATE_FILLER_PROPS = z.object({
 interface Update_Filler_Props extends z.infer<typeof UPDATE_FILLER_PROPS> {}
 
 export const updateFiller = async (data: Update_Filler_Props) => {
+  const user = await getCurrentUser();
   const parseResult = await UPDATE_FILLER_PROPS.safeParse(data);
   if (!parseResult.success) {
     // TODO need to think about better error handling
@@ -194,6 +184,9 @@ export const updateFiller = async (data: Update_Filler_Props) => {
   const eps = await prisma.episode.updateMany({
     where: {
       showId,
+      show: {
+        userId: user.id,
+      },
       seasonNumber: season,
       episodeNumber: {
         in: fillerEpArray,
@@ -208,6 +201,9 @@ export const updateFiller = async (data: Update_Filler_Props) => {
   await prisma.episode.updateMany({
     where: {
       showId,
+      show: {
+        userId: user.id,
+      },
       seasonNumber: season,
       episodeNumber: {
         notIn: fillerEpArray,
@@ -222,6 +218,9 @@ export const updateFiller = async (data: Update_Filler_Props) => {
   const updatedFillers = await prisma.episode.findMany({
     where: {
       showId,
+      show: {
+        userId: user.id,
+      },
       seasonNumber: season,
       isFiller: true,
     },
