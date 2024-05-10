@@ -1,4 +1,4 @@
-import { updateFiller } from '@/app/actions/episode';
+import { updateFiller } from '@/server/actions/episode';
 import { fetcher } from '@/lib/swrFetcher';
 import { Alert, Button, Select, Stack, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';

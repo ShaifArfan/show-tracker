@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteShowAction } from '@/app/actions/show';
+import { deleteShowAction } from '@/server/actions/show';
 import { ActionIcon } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import React, { useState } from 'react';

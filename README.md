@@ -11,14 +11,12 @@
   - [ ] Password Reset & Forget Password
 - [ ] Features
 
-  - [ ] Show description & url
+  - [x] Show description & url
   - [x] Range Watch
   - [x] Filler Episode Mark
     - [x] range validation (start < end)
   - [x] Dashboard with watched progress
   - [x] Theme change (only dark mode)
-
-- [ ] move from `swr` to next.js fetch with tag and revalidate
 
 Next.js File Structure
 
@@ -27,10 +25,10 @@ Src
 ├── App
 │   ├── layout
 │   ├── page
-│   ├── actions
 │   └── api
 ├── Components
 └── Server
+    ├── actions
     ├── db
     └── query(actions, mutations, data fetching)
 ```

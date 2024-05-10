@@ -1,6 +1,6 @@
 'use client';
 
-import { createShowAction } from '@/app/actions/show';
+import { createShowAction } from '@/server/actions/show';
 import {
   Box,
   Button,

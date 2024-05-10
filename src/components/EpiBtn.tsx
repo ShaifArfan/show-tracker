@@ -1,6 +1,6 @@
 'use client';
 
-import { updateEpisodeWatchAction } from '@/app/actions/episode';
+import { updateEpisodeWatchAction } from '@/server/actions/episode';
 import { Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { Episode } from '@prisma/client';

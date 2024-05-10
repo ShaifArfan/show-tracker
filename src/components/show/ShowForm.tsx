@@ -2,7 +2,7 @@ import {
   addEpisodes,
   rangeWatchEpisodes,
   removeEpisodes,
-} from '@/app/actions/episode';
+} from '@/server/actions/episode';
 import {
   Box,
   Button,

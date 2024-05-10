@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { Episode, Show } from '@prisma/client';
 import {
+  Anchor,
+  Box,
   Button,
   Drawer,
   Flex,
@@ -19,6 +21,7 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import Season from './Season';
 import DeleteShowButton from '../DeleteShowButton';
 import FillerForm from './FillerForm';
+import EditShowButton from './EditShowButton';
 
 interface ShowWithEpi extends Show {
   episodes: Episode[];
@@ -64,8 +67,16 @@ export default function SingleShow({
             xs: 'row',
           }}
         >
-          <Title order={2}>{show.title}</Title>
+          <Box>
+            <Title order={2}>{show.title}</Title>
+            {show.link && (
+              <Anchor target="_blank" href={show.link}>
+                {show.link}
+              </Anchor>
+            )}
+          </Box>
           <Flex gap="md" align="center">
+            <EditShowButton show={show} />
             <DeleteShowButton
               showId={showId}
               onDelete={() => {
