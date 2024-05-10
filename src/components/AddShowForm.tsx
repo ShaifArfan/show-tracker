@@ -164,7 +164,7 @@ export function AddShowDisplay() {
           title="Add New Show"
           styles={{
             header: {
-              background: 'var(--mantine-color-gray-3)',
+              background: 'var(--mantine-color-dark-8)',
             },
             title: {
               fontSize: 'var(--mantine-font-size-xl)',
