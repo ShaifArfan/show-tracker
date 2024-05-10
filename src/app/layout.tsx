@@ -4,6 +4,7 @@ import { Notifications } from '@mantine/notifications';
 // mantine styles
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import { ModalsProvider } from '@mantine/modals';
 
 export default function RootLayout({
   children,
@@ -18,8 +19,10 @@ export default function RootLayout({
       <body>
         <ColorSchemeScript defaultColorScheme="dark" />
         <MantineProvider defaultColorScheme="dark">
-          <Notifications />
-          {children}
+          <ModalsProvider>
+            <Notifications />
+            {children}
+          </ModalsProvider>
         </MantineProvider>
       </body>
     </html>

@@ -1,23 +1,25 @@
 'use client';
 
 import { deleteShowAction } from '@/server/actions/show';
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Text } from '@mantine/core';
+import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
+import { Show } from '@prisma/client';
 import React, { useState } from 'react';
 import { MdDelete } from 'react-icons/md';
 
 interface Props {
-  showId: number;
+  show: Show;
   onDelete?: () => void;
 }
 
-function DeleteShowButton({ showId, onDelete }: Props) {
+function DeleteShowButton({ show, onDelete }: Props) {
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
     try {
       setLoading(true);
-      const res = await deleteShowAction(showId);
+      const res = await deleteShowAction(show.id);
 
       notifications.show({
         id: `delete-show${res.id}`,
@@ -39,10 +41,28 @@ function DeleteShowButton({ showId, onDelete }: Props) {
     }
   };
 
+  const openModal = () =>
+    modals.openConfirmModal({
+      title: `Delete "${show.title}"`,
+      centered: true,
+      children: (
+        <Text size="md">
+          Do you really want to delete &quot;{show.title}&quot;?
+          <br />
+          This action is not irreversible.
+        </Text>
+      ),
+      labels: { confirm: 'Delete', cancel: 'Cancel' },
+      confirmProps: { color: 'red' },
+      onConfirm: () => {
+        handleDelete();
+      },
+    });
+
   return (
     <ActionIcon
       type="button"
-      onClick={handleDelete}
+      onClick={openModal}
       color="red"
       variant="light"
       loading={loading}

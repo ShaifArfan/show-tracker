@@ -6,30 +6,37 @@ import {
   Stack,
   TextInput,
   Textarea,
+  em,
 } from '@mantine/core';
-import { isNotEmpty, useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
+import { useForm, zodResolver } from '@mantine/form';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { Show } from '@prisma/client';
 import React, { useState } from 'react';
 import { MdEdit } from 'react-icons/md';
+import { z } from 'zod';
 
 interface EditShowButtonProps {
   show: Show;
 }
 
+const schema = z.object({
+  title: z.string().min(1, { message: 'Title is required' }),
+  link: z.string().url('Link must be a valid URL').optional().or(z.literal('')),
+});
+
 function EditShowButton({ show }: EditShowButtonProps) {
   const [opened, { close, open }] = useDisclosure();
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const [isMutating, setIsMutating] = useState(false);
+
   const form = useForm({
     initialValues: {
       title: show.title,
-      description: show.description,
-      link: show.link,
+      description: show.description || '',
+      link: show.link || '',
     },
-    validate: {
-      title: isNotEmpty('Title is required'),
-    },
+    validate: zodResolver(schema),
   });
 
   const handleSubmit = async () => {
@@ -65,7 +72,7 @@ function EditShowButton({ show }: EditShowButtonProps) {
   return (
     <div>
       <Drawer
-        position="right"
+        position={isMobile ? 'bottom' : 'right'}
         onClose={close}
         opened={opened}
         title="Edit Show"

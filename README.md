@@ -9,7 +9,7 @@
   - [ ] Delete Confirmation
   - [ ] Email Confirmation
   - [ ] Password Reset & Forget Password
-- [ ] Features
+- [x] Features
 
   - [x] Show description & url
   - [x] Range Watch

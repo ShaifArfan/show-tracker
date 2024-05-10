@@ -10,6 +10,7 @@ import {
 import { Show } from '@prisma/client';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/server/query/user';
+import { z } from 'zod';
 
 export async function createShowAction(data: CreateShowProps) {
   try {
@@ -37,20 +38,28 @@ export async function deleteShowAction(id: number) {
   }
 }
 
-export async function updateShowDetails({
-  id,
-  title,
-  link,
-  description,
-}: Pick<Show, 'id' | 'title' | 'description' | 'link'>) {
+const UpdateShowDetailsSchema = z.object({
+  title: z.string().min(1, { message: 'Title is required' }),
+  link: z
+    .string()
+    .url('Link must be a valid URL')
+    .nullish()
+    .optional()
+    .or(z.literal('')),
+  id: z.number(),
+  description: z.string().optional().nullish().or(z.literal('')),
+});
+export async function updateShowDetails(
+  data: Pick<Show, 'id' | 'title' | 'description' | 'link'>
+) {
   try {
-    if (title === '') {
-      throw new Error('Title is required', {
-        cause: {
-          field: 'title',
-        },
-      });
+    const parseResult = await UpdateShowDetailsSchema.safeParse(data);
+    if (!parseResult.success) {
+      // TODO need to think about better error handling
+      throw new Error(parseResult.error.errors[0].message);
     }
+    const { id, title, link, description } = parseResult.data;
+
     const user = await getCurrentUser();
     const show = prisma.show.update({
       where: {

@@ -70,7 +70,7 @@ export default function SingleShow({
           <Box>
             <Title order={2}>{show.title}</Title>
             {show.link && (
-              <Anchor target="_blank" href={show.link}>
+              <Anchor target="_blank" href={new URL(show.link).href}>
                 {show.link}
               </Anchor>
             )}
@@ -78,7 +78,7 @@ export default function SingleShow({
           <Flex gap="md" align="center">
             <EditShowButton show={show} />
             <DeleteShowButton
-              showId={showId}
+              show={show}
               onDelete={() => {
                 router.push('/');
               }}
