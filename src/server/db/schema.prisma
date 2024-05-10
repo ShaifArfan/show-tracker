@@ -23,8 +23,12 @@ model Show {
   title    String
   episodes Episode[]
 
-  user   User?   @relation(fields: [userId], references: [id])
-  userId String?
+  user        User    @relation(fields: [userId], references: [id])
+  userId      String
+  description String?
+  link        String?
+
+  @@index([userId])
 }
 
 model Episode {
@@ -35,4 +39,6 @@ model Episode {
   showId        Int
   watched       Boolean @default(false)
   isFiller      Boolean @default(false)
+
+  @@index([showId])
 }

@@ -12,7 +12,8 @@
     "seed": "prisma db seed"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/server/db/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/server/db/seed.ts",
+    "schema": "src/server/db/schema.prisma"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",

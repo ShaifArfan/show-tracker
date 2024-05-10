@@ -55,7 +55,7 @@ export default function SingleShow({
 
   return (
     <>
-      <Paper bg="var(--mantine-color-gray-3)" p="md">
+      <Paper bg="var(--mantine-color-dark-8)" p="md">
         <Flex
           gap="md"
           justify="space-between"

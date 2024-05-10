@@ -2,20 +2,21 @@
 
 - [x] setup eslint and prettier
 - [x] PostgreSQL - (supabase)
-  - [ ] Switch to vercel postgresql
 - [x] Authentication - [next-auth](https://github.com/nextauthjs/)
 - [x] UI (Mantine-v7l)
 - [ ] Updates
-    - [ ] Clear Show Form on Submit
-    - [ ] Delete Confirmation
-    - [ ] Email Confirmation
-    - [ ] Password Reset & Forget Password
+  - [x] Clear Show Form on Submit
+  - [ ] Delete Confirmation
+  - [ ] Email Confirmation
+  - [ ] Password Reset & Forget Password
 - [ ] Features
+
+  - [ ] Show description & url
   - [x] Range Watch
   - [x] Filler Episode Mark
-    - [ ] range validation (start < end)
+    - [x] range validation (start < end)
   - [x] Dashboard with watched progress
-  - [ ] Theme change (only dark mode)
+  - [x] Theme change (only dark mode)
 
 - [ ] move from `swr` to next.js fetch with tag and revalidate
 
@@ -32,4 +33,16 @@ Src
 └── Server
     ├── db
     └── query(actions, mutations, data fetching)
+```
+
+Prisma Migration:
+
+```shell
+npx prisma migrate dev --name added_job_title
+```
+
+Prisma Studio:
+
+```shell
+npx prisma studio
 ```

@@ -71,7 +71,7 @@ export default function AddShowForm({
   };
 
   return (
-    <Paper bg="var(--mantine-color-gray-3)" p="md">
+    <Paper bg="var(--mantine-color-dark-8)" p="md">
       {withTitle && (
         <Title order={3} mb="sm">
           Add New Shows

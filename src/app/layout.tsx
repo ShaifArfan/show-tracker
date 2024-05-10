@@ -16,8 +16,8 @@ export default function RootLayout({
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body>
-        <ColorSchemeScript defaultColorScheme="light" />
-        <MantineProvider defaultColorScheme="light">
+        <ColorSchemeScript defaultColorScheme="dark" />
+        <MantineProvider defaultColorScheme="dark">
           <Notifications />
           {children}
         </MantineProvider>
