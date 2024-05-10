@@ -79,9 +79,18 @@ function EditShowButton({ show }: EditShowButtonProps) {
       >
         <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
-            <TextInput label="Show Title" {...form.getInputProps('title')} />
-            <TextInput label="Show URL" {...form.getInputProps('link')} />
+            <TextInput
+              label="Show Title"
+              {...form.getInputProps('title')}
+              size="md"
+            />
+            <TextInput
+              label="Show URL"
+              {...form.getInputProps('link')}
+              size="md"
+            />
             <Textarea
+              size="md"
               label="Show Description"
               rows={5}
               {...form.getInputProps('description')}
