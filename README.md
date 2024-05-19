@@ -6,7 +6,7 @@
 - [x] UI (Mantine-v7l)
 - [ ] Updates
   - [x] Clear Show Form on Submit
-  - [ ] Delete Confirmation
+  - [x] Delete Confirmation
   - [ ] Email Confirmation
   - [ ] Password Reset & Forget Password
 - [x] Features

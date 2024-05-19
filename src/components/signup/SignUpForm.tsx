@@ -3,23 +3,19 @@
 import {
   TextInput,
   PasswordInput,
-  Checkbox,
-  Anchor,
   Paper,
   Title,
-  Text,
   Container,
-  Group,
   Button,
   Stack,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { signIn } from 'next-auth/react';
-import { useState } from 'react';
-import Link from 'next/link';
 import useSWRMutation from 'swr/mutation';
 import axios, { AxiosError } from 'axios';
 import { notifications } from '@mantine/notifications';
+import { register } from '@/server/actions/verify';
+import { useState } from 'react';
 import classes from './SignUpForm.module.css';
 
 export interface SignUpInfo {
@@ -33,30 +29,28 @@ const mutationFn = async (url: string, { arg }: { arg: SignUpInfo }) => {
   return res;
 };
 
-export function SignUpForm() {
+export function SignUpForm({ token }: { token: string }) {
+  const payload = token.split('.')[1];
+  const { email } = JSON.parse(atob(payload));
+  const [isMutating, setIsMutating] = useState(false);
   const form = useForm({
     initialValues: {
       name: '',
-      email: '',
+      email,
       password: '',
     },
   });
 
-  const { trigger, isMutating, error } = useSWRMutation(
-    `/api/auth/signup`,
-    mutationFn
-  );
-
   const handleSubmit = async (values: SignUpInfo) => {
+    notifications.show({
+      id: 'sign-up',
+      title: 'Sign up',
+      message: 'Signing up...',
+      loading: true,
+      autoClose: false,
+    });
     try {
-      notifications.show({
-        id: 'sign-up',
-        title: 'Sign up',
-        message: 'Signing up...',
-        loading: true,
-        autoClose: false,
-      });
-      await trigger(values);
+      await register({ token, ...form.values });
       await signIn('credentials', {
         email: values.email,
         password: values.password,
@@ -80,14 +74,16 @@ export function SignUpForm() {
         autoClose: true,
       });
 
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 409) {
-          error.response.data.target.forEach((t: string) => {
-            form.setFieldError(t, 'Already exists');
-          });
-        }
-      }
+      // if (error instanceof AxiosError) {
+      //   if (error.response?.status === 409) {
+      //     error.response.data.target.forEach((t: string) => {
+      //       form.setFieldError(t, 'Already exists');
+      //     });
+      //   }
+      // }
       console.error(e);
+    } finally {
+      setIsMutating(false);
     }
   };
 
@@ -96,12 +92,7 @@ export function SignUpForm() {
       <Title ta="center" className={classes.title}>
         Welcome !
       </Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Already have an account?{' '}
-        <Anchor size="sm" component={Link} href="/login">
-          Login
-        </Anchor>
-      </Text>
+
       <form onSubmit={form.onSubmit((v) => handleSubmit(v))}>
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <Stack>
@@ -118,6 +109,7 @@ export function SignUpForm() {
               placeholder="you@mantine.dev"
               required
               size="md"
+              readOnly
               {...form.getInputProps('email')}
             />
             <PasswordInput
@@ -128,14 +120,8 @@ export function SignUpForm() {
               {...form.getInputProps('password')}
             />
           </Stack>
-          <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
-            <Anchor component="button" size="sm">
-              Forgot password?
-            </Anchor>
-          </Group>
           <Button fullWidth mt="xl" loading={isMutating} type="submit">
-            Sign in
+            Sign Up
           </Button>
         </Paper>
       </form>
