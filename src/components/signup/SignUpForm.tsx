@@ -42,13 +42,7 @@ export function SignUpForm({ token }: { token: string }) {
   });
 
   const handleSubmit = async (values: SignUpInfo) => {
-    notifications.show({
-      id: 'sign-up',
-      title: 'Sign up',
-      message: 'Signing up...',
-      loading: true,
-      autoClose: false,
-    });
+    setIsMutating(true);
     try {
       await register({ token, ...form.values });
       await signIn('credentials', {
@@ -56,7 +50,7 @@ export function SignUpForm({ token }: { token: string }) {
         password: values.password,
         callbackUrl: '/',
       });
-      notifications.update({
+      notifications.show({
         id: 'sign-up',
         title: 'Sign up',
         message: 'Signed up successfully!',
@@ -65,7 +59,7 @@ export function SignUpForm({ token }: { token: string }) {
         autoClose: true,
       });
     } catch (e) {
-      notifications.update({
+      notifications.show({
         id: 'sign-up',
         title: 'Sign up',
         message: 'Failed to sign up',
