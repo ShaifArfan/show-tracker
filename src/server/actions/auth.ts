@@ -3,6 +3,7 @@
 import { handleError } from '@/lib/handleError';
 import { sendToken } from '../query/sendToken';
 import { signUp } from '../query/auth/sign-up';
+import { registerEmail } from '../query/auth/registerEmail';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
 if (!JWT_ALGORITHM || !JWT_SECRET) {
@@ -11,10 +12,7 @@ if (!JWT_ALGORITHM || !JWT_SECRET) {
 
 export const registerEmailAction = async (email: string) => {
   try {
-    await sendToken({
-      email,
-      subject: 'register',
-    });
+    await registerEmail(email);
   } catch (e) {
     const res = await handleError(e).json();
     console.error(res);

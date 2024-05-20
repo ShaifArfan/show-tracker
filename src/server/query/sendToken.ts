@@ -2,7 +2,6 @@
 
 import * as jose from 'jose';
 import * as nodeMailer from 'nodemailer';
-import { z } from 'zod';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
 const { MAIL_USER, PASSWORD } = process.env;
@@ -26,25 +25,22 @@ const transporter = nodeMailer.createTransport({
   },
 });
 
-const RegisterEmailSchema = z.object({
-  email: z.string().email('Invalid email address'),
-});
-
 export const sendToken = async ({
   email,
-  subject,
+  token_subject,
+  mailBody,
 }: {
   email: string;
-  subject: string;
+  token_subject: string;
+  email_subject: string;
+  mailBody: {
+    text: (token: string) => string;
+    html: (token: string) => string;
+  };
 }) => {
-  const parseResult = RegisterEmailSchema.safeParse({ email });
-  if (!parseResult.success) {
-    throw new Error(parseResult.error.errors[0].message);
-  }
-
   const token = await new jose.SignJWT({
     email,
-    sub: subject,
+    sub: token_subject,
   })
     .setProtectedHeader({ alg: JWT_ALGORITHM })
     .setIssuedAt()
@@ -58,11 +54,8 @@ export const sendToken = async ({
     },
     to: [email],
     subject: 'Register Email',
-    text: `Complete your registration by clicking the link below: http://localhost:3000/singup?token=${token}`,
-    html: `<p>
-        Complete your registration by clicking the link below:
-        <a href="http://localhost:3000/signup?token=${token}">Register</a> 
-      </p>`,
+    html: mailBody.html(token),
+    text: mailBody.text(token),
   };
 
   const res = await transporter.sendMail(mailOptions);
