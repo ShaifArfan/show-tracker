@@ -7,7 +7,7 @@
 - [ ] Updates
   - [x] Clear Show Form on Submit
   - [x] Delete Confirmation
-  - [ ] Email Confirmation
+  - [x] Email Registration & verification
   - [ ] Password Reset & Forget Password
 - [x] Features
 

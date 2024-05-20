@@ -7,6 +7,7 @@ import {
   Group,
   Paper,
   Stack,
+  Text,
   TextInput,
   Title,
 } from '@mantine/core';
@@ -15,6 +16,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import { registerEmailAction } from '@/server/actions/auth';
 import { notifications } from '@mantine/notifications';
+import Link from 'next/link';
 import { SignUpForm } from './SignUpForm';
 
 function Register() {
@@ -59,13 +61,15 @@ function Register() {
   if (!token) {
     return (
       <Container size={420} my={40}>
-        <Title ta="center">Welcome !</Title>
-        {/* <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Already have an account?{' '}
-        <Anchor size="sm" component={Link} href="/login">
-          Login
-        </Anchor>
-      </Text> */}
+        <Title ta="center" order={2}>
+          Register
+        </Title>
+        <Text c="dimmed" size="sm" ta="center" mt={5}>
+          Already have an account?{' '}
+          <Anchor size="sm" component={Link} href="/login">
+            Login
+          </Anchor>
+        </Text>
         <form onSubmit={form.onSubmit(() => handleSubmit())}>
           <Paper withBorder shadow="md" p={30} mt={30} radius="md">
             <Stack>
