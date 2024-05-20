@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import * as jose from 'jose';
 import * as nodeMailer from 'nodemailer';
 import bcrypt from 'bcryptjs';
+import { sendToken } from '../query/sendToken';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
 if (!JWT_ALGORITHM || !JWT_SECRET) {
@@ -21,42 +22,17 @@ const transporter = nodeMailer.createTransport({
   },
 });
 
-export const sendToken = async (email: string) => {
+export const registerEmail = async (email: string) => {
   try {
-    const token = await new jose.SignJWT({
-      email,
-    })
-      .setProtectedHeader({ alg: JWT_ALGORITHM })
-      .setIssuedAt()
-      .setExpirationTime('1h')
-      .sign(new TextEncoder().encode(JWT_SECRET));
-
-    const mailOptions = {
-      from: {
-        name: 'Show Tracker',
-        address: process.env.MAIL_USER,
-      },
-      to: [email],
-      subject: 'Register Email',
-      text: `Complete your registration by clicking the link below: http://localhost:3000/singup?token=${token}`,
-      html: `<p>
-        Complete your registration by clicking the link below:
-        <a href="http://localhost:3000/signup?token=${token}">Register</a> 
-      </p>`,
-    };
-
-    const res = await transporter.sendMail(mailOptions);
-
+    const res = sendToken(email);
     console.log('Email sent: ', res);
-
-    return token;
   } catch (e) {
     console.error(e);
     throw new Error('Failed to generate token');
   }
 };
 
-export const register = async ({
+export const signUp = async ({
   token,
   name,
   password,

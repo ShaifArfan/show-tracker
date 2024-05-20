@@ -1,10 +1,8 @@
 'use client';
 
-import { sendToken } from '@/server/actions/verify';
 import {
   Anchor,
   Button,
-  Checkbox,
   Container,
   Group,
   Paper,
@@ -15,6 +13,7 @@ import {
 import { useForm } from '@mantine/form';
 import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
+import { registerEmail } from '@/server/actions/verify';
 import { SignUpForm } from './SignUpForm';
 
 function Register() {
@@ -31,7 +30,7 @@ function Register() {
   const handleSubmit = async () => {
     setIsMutating(true);
     try {
-      await sendToken(form.values.email);
+      await registerEmail(form.values.email);
     } catch (e) {
       console.error(e);
     } finally {
