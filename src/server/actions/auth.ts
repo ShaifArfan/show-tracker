@@ -1,7 +1,6 @@
 'use server';
 
 import { handleError } from '@/lib/handleError';
-import { sendToken } from '../query/sendToken';
 import { signUp } from '../query/auth/sign-up';
 import { registerEmail } from '../query/auth/registerEmail';
 

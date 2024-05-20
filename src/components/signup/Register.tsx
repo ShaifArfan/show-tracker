@@ -50,6 +50,7 @@ function Register() {
         message: error.message,
         color: 'red',
       });
+      form.setFieldError('email', error.message);
     } finally {
       setIsMutating(false);
     }

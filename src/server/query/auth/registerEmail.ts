@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { siteUrl } from '@/app/constants/SiteInfo';
+import prisma from '@/lib/prisma';
 import { sendToken } from '../sendToken';
 
 const RegisterEmailSchema = z.object({
@@ -10,6 +11,13 @@ export const registerEmail = async (email: string) => {
   const parseResult = RegisterEmailSchema.safeParse({ email });
   if (!parseResult.success) {
     throw new Error(parseResult.error.errors[0].message);
+  }
+
+  const userExist = await prisma.user.findUnique({
+    where: { email: parseResult.data.email },
+  });
+  if (userExist) {
+    throw new Error('User already exists');
   }
 
   const mailBody = {
