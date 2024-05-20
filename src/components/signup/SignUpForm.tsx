@@ -12,7 +12,7 @@ import {
 import { useForm } from '@mantine/form';
 import { signIn } from 'next-auth/react';
 import { notifications } from '@mantine/notifications';
-import { signUp } from '@/server/actions/verify';
+import { signUpAction } from '@/server/actions/auth';
 import { useState } from 'react';
 import classes from './SignUpForm.module.css';
 
@@ -37,7 +37,7 @@ export function SignUpForm({ token }: { token: string }) {
   const handleSubmit = async (values: SignUpInfo) => {
     setIsMutating(true);
     try {
-      await signUp({ token, ...form.values });
+      await signUpAction({ token, ...form.values });
       await signIn('credentials', {
         email: values.email,
         password: values.password,

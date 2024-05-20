@@ -13,7 +13,7 @@ import {
 import { isEmail, useForm } from '@mantine/form';
 import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
-import { registerEmail } from '@/server/actions/verify';
+import { registerEmailAction } from '@/server/actions/auth';
 import { notifications } from '@mantine/notifications';
 import { SignUpForm } from './SignUpForm';
 
@@ -34,7 +34,7 @@ function Register() {
   const handleSubmit = async () => {
     setIsMutating(true);
     try {
-      await registerEmail(form.values.email);
+      await registerEmailAction(form.values.email);
       notifications.show({
         id: 'register-email',
         title: 'Register Email',

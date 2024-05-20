@@ -2,6 +2,7 @@
 
 import * as jose from 'jose';
 import * as nodeMailer from 'nodemailer';
+import { z } from 'zod';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
 const { MAIL_USER, PASSWORD } = process.env;
@@ -25,16 +26,25 @@ const transporter = nodeMailer.createTransport({
   },
 });
 
+const RegisterEmailSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
 export const sendToken = async ({
   email,
-  sub,
+  subject,
 }: {
   email: string;
-  sub: string;
+  subject: string;
 }) => {
+  const parseResult = RegisterEmailSchema.safeParse({ email });
+  if (!parseResult.success) {
+    throw new Error(parseResult.error.errors[0].message);
+  }
+
   const token = await new jose.SignJWT({
     email,
-    sub,
+    sub: subject,
   })
     .setProtectedHeader({ alg: JWT_ALGORITHM })
     .setIssuedAt()
