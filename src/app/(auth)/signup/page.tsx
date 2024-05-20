@@ -1,9 +1,17 @@
-import Register from '@/components/signup/Register';
+import Register from '@/components/signup/RegisterEmail';
 import { SignUpForm } from '@/components/signup/SignUpForm';
 
-function SingUp() {
-  // return <SignUpForm />;
+function page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const { token } = searchParams;
+  if (token) {
+    return <SignUpForm token={token} />;
+  }
+
   return <Register />;
 }
 
-export default SingUp;
+export default page;

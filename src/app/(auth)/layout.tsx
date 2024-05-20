@@ -4,7 +4,7 @@ import React from 'react';
 function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <Container py={100}>
-      <Center>{children}</Center>
+      <Center w="100%">{children}</Center>
     </Container>
   );
 }

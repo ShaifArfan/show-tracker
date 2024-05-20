@@ -8,15 +8,14 @@ import {
   Paper,
   Title,
   Text,
-  Container,
   Group,
   Button,
+  Box,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import Link from 'next/link';
-import classes from './LoginForm.module.css';
 
 interface LoginInfo {
   email: string;
@@ -49,18 +48,18 @@ export function LoginForm() {
   };
 
   return (
-    <Container size={420} my={40}>
-      <Title ta="center" className={classes.title}>
-        Welcome back!
-      </Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Do not have an account yet?{' '}
-        <Anchor size="sm" component={Link} href="/signup">
-          Create account
-        </Anchor>
-      </Text>
+    <Box w="100%" maw={400}>
       <form onSubmit={form.onSubmit((v) => handleSubmit(v))}>
-        <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+        <Paper withBorder shadow="md" p={30} mt={30}>
+          <Box mb="lg">
+            <Title order={2}>Welcome back!</Title>
+            <Text c="dimmed" size="sm" mt={5}>
+              Do not have an account yet?{' '}
+              <Anchor size="sm" component={Link} href="/signup">
+                Create account
+              </Anchor>
+            </Text>
+          </Box>
           <TextInput
             type="email"
             label="Email"
@@ -88,6 +87,6 @@ export function LoginForm() {
           </Button>
         </Paper>
       </form>
-    </Container>
+    </Box>
   );
 }

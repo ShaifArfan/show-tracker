@@ -1,6 +1,7 @@
 'use server';
 
 import { handleError } from '@/lib/handleError';
+import { redirect } from 'next/navigation';
 import { sendResetPasswordToken } from '../query/password/resetPasswordToken';
 import { resetPassword } from '../query/password/resetPassword';
 
@@ -30,6 +31,7 @@ export const resetPasswordAction = async ({
       throw new Error('Passwords do not match');
     }
     resetPassword({ token, password });
+    redirect('/login');
   } catch (e) {
     const res = await handleError(e).json();
     console.error(res);

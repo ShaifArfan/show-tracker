@@ -5,16 +5,16 @@ import {
   PasswordInput,
   Paper,
   Title,
-  Container,
   Button,
   Stack,
+  Box,
+  Text,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { signIn } from 'next-auth/react';
 import { notifications } from '@mantine/notifications';
 import { signUpAction } from '@/server/actions/auth';
 import { useState } from 'react';
-import classes from './SignUpForm.module.css';
 
 export interface SignUpInfo {
   name: string;
@@ -68,13 +68,13 @@ export function SignUpForm({ token }: { token: string }) {
   };
 
   return (
-    <Container size={420} my={40}>
-      <Title ta="center" className={classes.title}>
-        Welcome !
-      </Title>
-
+    <Box w="100%" maw={400}>
       <form onSubmit={form.onSubmit((v) => handleSubmit(v))}>
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+          <Box mb="xl">
+            <Title order={2}>Create an account!</Title>
+            <Text>Fill in the form below to create an account.</Text>
+          </Box>
           <Stack>
             <TextInput
               label="Name"
@@ -105,6 +105,6 @@ export function SignUpForm({ token }: { token: string }) {
           </Button>
         </Paper>
       </form>
-    </Container>
+    </Box>
   );
 }
