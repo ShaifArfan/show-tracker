@@ -2,8 +2,9 @@
 
 import prisma from '@/lib/prisma';
 import * as jose from 'jose';
-import * as nodeMailer from 'nodemailer';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+import { handleError } from '@/lib/handleError';
 import { sendToken } from '../query/sendToken';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
@@ -11,24 +12,23 @@ if (!JWT_ALGORITHM || !JWT_SECRET) {
   throw new Error('JWT configuration is missing in the environment variables.');
 }
 
-const transporter = nodeMailer.createTransport({
-  service: 'gmail',
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.PASSWORD,
-  },
+const RegisterEmailSchema = z.object({
+  email: z.string().email(),
 });
 
 export const registerEmail = async (email: string) => {
   try {
-    const res = sendToken(email);
-    console.log('Email sent: ', res);
+    const parseResult = RegisterEmailSchema.safeParse({ email });
+    if (!parseResult.success) {
+      throw new Error('Invalid email');
+    }
+
+    const res = sendToken({ email: parseResult.data.email, sub: 'register' });
+    // console.log('Email sent: ', res);
   } catch (e) {
-    console.error(e);
-    throw new Error('Failed to generate token');
+    const res = await handleError(e).json();
+    console.error(res);
+    throw e instanceof Error ? e : new Error('Failed to send email');
   }
 };
 
@@ -44,7 +44,10 @@ export const signUp = async ({
   try {
     const { payload } = await jose.jwtVerify(
       token,
-      new TextEncoder().encode(JWT_SECRET)
+      new TextEncoder().encode(JWT_SECRET),
+      {
+        subject: 'register',
+      }
     );
     const { email } = payload;
 

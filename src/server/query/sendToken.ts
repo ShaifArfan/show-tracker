@@ -1,13 +1,17 @@
 'server only';
 
-import prisma from '@/lib/prisma';
 import * as jose from 'jose';
 import * as nodeMailer from 'nodemailer';
-import bcrypt from 'bcryptjs';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
+const { MAIL_USER, PASSWORD } = process.env;
 if (!JWT_ALGORITHM || !JWT_SECRET) {
   throw new Error('JWT configuration is missing in the environment variables.');
+}
+if (!MAIL_USER || !PASSWORD) {
+  throw new Error(
+    'Email configuration is missing in the environment variables.'
+  );
 }
 
 const transporter = nodeMailer.createTransport({
@@ -16,14 +20,21 @@ const transporter = nodeMailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.PASSWORD,
+    user: MAIL_USER,
+    pass: PASSWORD,
   },
 });
 
-export const sendToken = async (email: string) => {
+export const sendToken = async ({
+  email,
+  sub,
+}: {
+  email: string;
+  sub: string;
+}) => {
   const token = await new jose.SignJWT({
     email,
+    sub,
   })
     .setProtectedHeader({ alg: JWT_ALGORITHM })
     .setIssuedAt()
@@ -33,7 +44,7 @@ export const sendToken = async (email: string) => {
   const mailOptions = {
     from: {
       name: 'Show Tracker',
-      address: process.env.MAIL_USER,
+      address: MAIL_USER,
     },
     to: [email],
     subject: 'Register Email',

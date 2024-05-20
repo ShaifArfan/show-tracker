@@ -10,10 +10,11 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { isEmail, useForm } from '@mantine/form';
 import { useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 import { registerEmail } from '@/server/actions/verify';
+import { notifications } from '@mantine/notifications';
 import { SignUpForm } from './SignUpForm';
 
 function Register() {
@@ -25,14 +26,30 @@ function Register() {
     initialValues: {
       email: '',
     },
+    validate: {
+      email: isEmail('Invalid email'),
+    },
   });
 
   const handleSubmit = async () => {
     setIsMutating(true);
     try {
       await registerEmail(form.values.email);
+      notifications.show({
+        id: 'register-email',
+        title: 'Register Email',
+        message: 'Email sent successfully!',
+        color: 'green',
+      });
     } catch (e) {
-      console.error(e);
+      const error = e instanceof Error ? e : new Error('Failed to send email');
+      console.error(error);
+      notifications.show({
+        id: 'register-email',
+        title: 'Register Email Failed',
+        message: error.message,
+        color: 'red',
+      });
     } finally {
       setIsMutating(false);
     }
@@ -48,7 +65,7 @@ function Register() {
           Login
         </Anchor>
       </Text> */}
-        <form onSubmit={form.onSubmit((v) => handleSubmit())}>
+        <form onSubmit={form.onSubmit(() => handleSubmit())}>
           <Paper withBorder shadow="md" p={30} mt={30} radius="md">
             <Stack>
               <TextInput
