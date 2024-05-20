@@ -1,4 +1,4 @@
-'server only';
+import 'server-only';
 
 import * as jose from 'jose';
 import * as nodeMailer from 'nodemailer';
@@ -28,6 +28,7 @@ const transporter = nodeMailer.createTransport({
 export const sendToken = async ({
   email,
   token_subject,
+  email_subject,
   mailBody,
 }: {
   email: string;
@@ -53,7 +54,7 @@ export const sendToken = async ({
       address: MAIL_USER,
     },
     to: [email],
-    subject: 'Register Email',
+    subject: email_subject,
     html: mailBody.html(token),
     text: mailBody.text(token),
   };

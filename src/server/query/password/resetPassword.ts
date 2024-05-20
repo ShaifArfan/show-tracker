@@ -1,38 +1,36 @@
-import 'server-only';
-
-import prisma from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
-import * as jose from 'jose';
 import { z } from 'zod';
+import * as jose from 'jose';
+import bcrypt from 'bcryptjs';
+import prisma from '@/lib/prisma';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
 if (!JWT_ALGORITHM || !JWT_SECRET) {
   throw new Error('JWT configuration is missing in the environment variables.');
 }
 
-const SignUpSchema = z.object({
+const ResetPasswordSchema = z.object({
   token: z.string(),
-  name: z.string(),
   password: z.string(),
 });
 
-interface SignUpProps extends z.infer<typeof SignUpSchema> {}
+interface ResetPasswordProps extends z.infer<typeof ResetPasswordSchema> {}
 
-export const signUp = async ({ name, password, token }: SignUpProps) => {
-  const parseResult = SignUpSchema.safeParse({ token, name, password });
+export const resetPassword = async ({
+  token,
+  password,
+}: ResetPasswordProps) => {
+  const parseResult = ResetPasswordSchema.safeParse({ token, password });
   if (!parseResult.success) {
     throw new Error(parseResult.error.errors[0].message);
   }
-
   const { payload } = await jose.jwtVerify(
-    token,
+    parseResult.data.token,
     new TextEncoder().encode(JWT_SECRET),
     {
-      subject: 'register',
+      subject: 'reset-password',
     }
   );
   const { email } = payload;
-
   if (!email || typeof email !== 'string') {
     throw new Error('Invalid token');
   }
@@ -40,11 +38,10 @@ export const signUp = async ({ name, password, token }: SignUpProps) => {
   const salt = bcrypt.genSaltSync(10);
   const hashedPass = bcrypt.hashSync(parseResult.data.password, salt);
 
-  const user = await prisma.user.create({
+  const user = await prisma.user.update({
+    where: { email },
     data: {
-      email,
       password: hashedPass,
-      name: parseResult.data.name,
     },
     select: {
       email: true,

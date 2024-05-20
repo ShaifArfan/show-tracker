@@ -1,11 +1,11 @@
+import { Center, Container } from '@mantine/core';
 import React from 'react';
 
 function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      {/* <h1>AuthLayout</h1> */}
-      {children}
-    </div>
+    <Container py={100}>
+      <Center>{children}</Center>
+    </Container>
   );
 }
 

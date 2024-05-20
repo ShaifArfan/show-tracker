@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { z } from 'zod';
 import { siteUrl } from '@/app/constants/SiteInfo';
 import prisma from '@/lib/prisma';
@@ -22,11 +24,11 @@ export const registerEmail = async (email: string) => {
 
   const mailBody = {
     text: (token: string) =>
-      `Complete your registration by clicking the link below: ${siteUrl}/register/${token}`,
+      `Complete your registration by clicking the link below: ${siteUrl}/signup/?token=${token}`,
     html: (token: string) => `
     <p>
       Complete your registration by clicking the link below:
-      <a href="${siteUrl}/signup?token=${token}">Register</a>
+      <a href="${siteUrl}/signup/?token=${token}">Register</a>
     </p>`,
   };
 

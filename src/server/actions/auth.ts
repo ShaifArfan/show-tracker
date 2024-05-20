@@ -31,7 +31,8 @@ export const signUpAction = async ({
   try {
     await signUp({ token, name, password });
   } catch (e) {
-    console.error(e);
-    throw new Error('Failed to register');
+    const res = await handleError(e).json();
+    console.error(res);
+    throw e instanceof Error ? e : new Error('Failed to sign up');
   }
 };

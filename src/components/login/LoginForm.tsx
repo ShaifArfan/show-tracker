@@ -79,7 +79,7 @@ export function LoginForm() {
           />
           <Group justify="space-between" mt="lg">
             <Checkbox label="Remember me" />
-            <Anchor component="button" size="sm">
+            <Anchor component={Link} size="sm" href="/reset-password">
               Forgot password?
             </Anchor>
           </Group>
