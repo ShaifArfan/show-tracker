@@ -3,12 +3,12 @@
 - [x] setup eslint and prettier
 - [x] PostgreSQL - (supabase)
 - [x] Authentication - [next-auth](https://github.com/nextauthjs/)
-- [x] UI (Mantine-v7l)
-- [ ] Updates
+- [x] UI (Mantine-V7)
+- [x] Updates
   - [x] Clear Show Form on Submit
   - [x] Delete Confirmation
   - [x] Email Registration & verification
-  - [ ] Password Reset & Forget Password
+  - [x] Password Reset & Forget Password
 - [x] Features
 
   - [x] Show description & url
@@ -17,6 +17,10 @@
     - [x] range validation (start < end)
   - [x] Dashboard with watched progress
   - [x] Theme change (only dark mode)
+  - [ ] Analytics (heatmap-daily watches)
+    - [ ] how to handle range watch for analytics?\*
+  - [ ] My Account
+  - [ ] DB Env Migration
 
 Next.js File Structure
 
