@@ -32,13 +32,16 @@ model Show {
 }
 
 model Episode {
-  id            Int     @id @default(autoincrement())
-  episodeNumber Int
-  seasonNumber  Int
-  show          Show    @relation(fields: [showId], references: [id])
-  showId        Int
-  watched       Boolean @default(false)
-  isFiller      Boolean @default(false)
+  id               Int       @id @default(autoincrement())
+  episodeNumber    Int
+  seasonNumber     Int
+  show             Show      @relation(fields: [showId], references: [id])
+  showId           Int
+  watched          Boolean   @default(false)
+  isFiller         Boolean   @default(false)
+  created_at       DateTime  @default(now())
+  last_modified_at DateTime  @default(now()) @updatedAt
+  watched_at       DateTime?
 
   @@index([showId])
 }

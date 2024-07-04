@@ -1,9 +1,10 @@
 'use server';
 
-import { Box, Flex, Paper, RingProgress, Text } from '@mantine/core';
+import { Box, Flex, Paper, RingProgress, Space, Text } from '@mantine/core';
 import React from 'react';
 import Link from 'next/link';
 import { AddShowDisplay } from '../AddShowForm';
+import Heatmap from '../analytics/Heatmap';
 
 interface Props {
   shows: {
@@ -21,6 +22,8 @@ function Dashboard({ shows }: Props) {
   return (
     <Box>
       <AddShowDisplay />
+      <Space h="md" />
+      <Heatmap />
       <Box
         mt="lg"
         style={{

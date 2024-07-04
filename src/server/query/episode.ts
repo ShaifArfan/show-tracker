@@ -1,5 +1,6 @@
 import 'server-only';
 import prisma from '@/lib/prisma';
+import dayjs from 'dayjs';
 import { getCurrentUser } from './user';
 
 export async function updateEpisodeWatch({
@@ -20,6 +21,8 @@ export async function updateEpisodeWatch({
     },
     data: {
       watched,
+      watched_at: watched ? dayjs(Date.now()).subtract(3, 'd').toDate() : null,
+      // watched_at: watched ? new Date() : null,
     },
   });
   return episode;

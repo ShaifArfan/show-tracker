@@ -1,0 +1,68 @@
+'use client';
+
+import { fetcher } from '@/lib/swrFetcher';
+import { Box, Tooltip } from '@mantine/core';
+import React from 'react';
+import useSWR from 'swr';
+
+const levelColors = ['#4e4e4e76', '#39436d', '#5a71d0', '#3860ff', '#4967ff'];
+
+function Heatmap() {
+  const {
+    data,
+    isLoading,
+    error: fetchError,
+  } = useSWR<Record<string, number>>(`/api/episode/analytics`, fetcher);
+
+  if (isLoading) {
+    return 'loading...';
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  const tempArr = Object.values(data).sort((a, b) => a - b);
+  const min = tempArr[0];
+  const max = tempArr[tempArr.length - 1];
+  const stats = data;
+  console.log({ min, max });
+
+  return (
+    <Box
+      style={{
+        maxWidth: '928px',
+        width: '100%',
+        overflow: 'scroll',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '90px',
+        flexWrap: 'wrap',
+        gap: '3px',
+        rowGap: '3px',
+      }}
+    >
+      {Object.keys(stats).map((item) => {
+        const level = Math.round(stats[item] / ((max - min) / 4));
+        console.log({ level, value: stats[item] });
+        return (
+          <Tooltip label={`${item}: ${stats[item]}`}>
+            <Box
+              bg={levelColors[level]}
+              display="inline-block"
+              w={12}
+              h={12}
+              ta="center"
+              p={2}
+              style={{
+                borderRadius: '2px',
+              }}
+            />
+          </Tooltip>
+        );
+      })}
+    </Box>
+  );
+}
+
+export default Heatmap;
