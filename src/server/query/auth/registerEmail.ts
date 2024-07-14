@@ -18,6 +18,7 @@ export const registerEmail = async (email: string) => {
   const userExist = await prisma.user.findUnique({
     where: { email: parseResult.data.email },
   });
+
   if (userExist) {
     throw new Error('User already exists');
   }
@@ -32,7 +33,7 @@ export const registerEmail = async (email: string) => {
     </p>`,
   };
 
-  sendToken({
+  await sendToken({
     email: parseResult.data.email,
     token_subject: 'register',
     email_subject: 'Register Email',
