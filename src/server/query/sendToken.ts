@@ -4,11 +4,11 @@ import * as jose from 'jose';
 import * as nodeMailer from 'nodemailer';
 
 const { JWT_ALGORITHM, JWT_SECRET } = process.env;
-const { MAIL_USER, PASSWORD } = process.env;
+const { MAIL_USER, PASSWORD: MAIL_APP_PASSWORD } = process.env;
 if (!JWT_ALGORITHM || !JWT_SECRET) {
   throw new Error('JWT configuration is missing in the environment variables.');
 }
-if (!MAIL_USER || !PASSWORD) {
+if (!MAIL_USER || !MAIL_APP_PASSWORD) {
   throw new Error(
     'Email configuration is missing in the environment variables.'
   );
@@ -21,7 +21,7 @@ const transporter = nodeMailer.createTransport({
   secure: false,
   auth: {
     user: MAIL_USER,
-    pass: PASSWORD,
+    pass: MAIL_APP_PASSWORD,
   },
 });
 
