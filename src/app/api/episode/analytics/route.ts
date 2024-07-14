@@ -1,19 +1,18 @@
 import dayjs from 'dayjs';
-import { handleError } from '@/lib/handleError';
 import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/server/query/user';
-import { updateEpisodeWatch } from '@/server/query/episode';
-import { equal } from 'assert';
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
 
-  console.log('analytics');
   try {
-    const _data = await prisma.episode.findMany({
+    const resData = await prisma.episode.findMany({
       where: {
+        show: {
+          userId: user.id,
+        },
         watched_at: {
           gte: new Date(dayjs().subtract(365, 'day').date()),
           lte: new Date(),
@@ -31,7 +30,7 @@ export async function GET(req: NextRequest) {
       data[date] = 0;
     }
 
-    _data.forEach((item) => {
+    resData.forEach((item) => {
       const date = dayjs(item.watched_at).format('DD-MM-YYYY');
       if (data[date]) {
         data[date] += 1;
