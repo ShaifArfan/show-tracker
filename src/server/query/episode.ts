@@ -21,8 +21,8 @@ export async function updateEpisodeWatch({
     },
     data: {
       watched,
-      watched_at: watched ? dayjs(Date.now()).subtract(3, 'd').toDate() : null,
-      // watched_at: watched ? new Date() : null,
+      // watched_at: watched ? dayjs(Date.now()).subtract(3, 'd').toDate() : null,
+      watched_at: watched ? new Date() : null,
     },
   });
   return episode;

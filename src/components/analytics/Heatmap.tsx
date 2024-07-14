@@ -47,7 +47,7 @@ function Heatmap() {
         return (
           <Tooltip label={`${item}: ${stats[item]}`}>
             <Box
-              bg={levelColors[level]}
+              bg={levelColors[level] || levelColors[0]}
               display="inline-block"
               w={12}
               h={12}
