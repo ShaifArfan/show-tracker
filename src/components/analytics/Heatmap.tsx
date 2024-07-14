@@ -26,7 +26,6 @@ function Heatmap() {
   const min = tempArr[0];
   const max = tempArr[tempArr.length - 1];
   const stats = data;
-  console.log({ min, max });
 
   return (
     <Box
@@ -43,8 +42,8 @@ function Heatmap() {
       }}
     >
       {Object.keys(stats).map((item) => {
+        // const level = Math.round((Math.random() * 10) / ((max - min) / 4));
         const level = Math.round(stats[item] / ((max - min) / 4));
-        console.log({ level, value: stats[item] });
         return (
           <Tooltip label={`${item}: ${stats[item]}`}>
             <Box
